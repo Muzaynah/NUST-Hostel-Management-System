@@ -2,7 +2,8 @@
 import tkinter as tk
 from frontend.login_page import LoginPage
 from frontend.admin_screen import AdminScreen
-from frontend.student_screen import StudentScreen
+from frontend.student_dashboard import StudentDashboard
+from frontend.student_outpass import StudentOutpass
 
 class MainWindow(tk.Tk):
     def __init__(self):
@@ -13,9 +14,10 @@ class MainWindow(tk.Tk):
         self.iconbitmap('assets/nust_logo.ico')
 
         # Create login page and student/admin pages
-        self.login_page = LoginPage(self, self.show_admin_page, self.show_student_page)
+        self.login_page = LoginPage(self, self.show_admin_page, self.show_student_dashboard)
         self.admin_screen = AdminScreen(self)
-        self.student_screen = StudentScreen(self)
+        self.student_dashboard = StudentDashboard(self, self.show_outpass, self.show_complaints, self.show_attendance)
+        self.student_outpass = StudentOutpass(self, self.show_student_dashboard)
 
         # Set the login page as the initial page
         self.login_page.grid(row=0, column=0, sticky='nsew')
@@ -29,11 +31,29 @@ class MainWindow(tk.Tk):
         self.student_screen.grid_forget()  # Remove the student screen if it's showing
         self.admin_screen.grid(row=0, column=0, sticky='nsew')  # Show the admin screen
 
-    def show_student_page(self):
-        # Switch to the student screen
+    def show_student_dashboard(self):
+        # Switch to the student dashboard
         self.login_page.grid_forget()  # Remove the login page
         self.admin_screen.grid_forget()  # Remove the admin screen if it's showing
-        self.student_screen.grid(row=0, column=0, sticky='nsew')  # Show the student screen
+        self.student_outpass.grid_forget() # Remove the outpass screen if it is showing
+        self.student_dashboard.grid(row=0, column=0, sticky='nsew')  # Show the student dashboard
+
+    # Functions to handle transitions to specific sections/screens
+
+    def show_complaints(self):
+        # Your code to switch to the complaints section goes here
+        print("Switching to Complaints Section")
+
+    def show_attendance(self):
+        # Your code to switch to the attendance section goes here
+        print("Switching to Attendance Section")
+
+    def show_outpass(self):
+        # Switch to the student outpass screen
+        print("Switching to Outpass Section")
+        self.student_dashboard.grid_forget()  # Remove the student dashboard if it's showing
+        self.student_outpass.grid(row=0, column=0, sticky='nsew')  # Show the student outpass screen
+
 
 if __name__ == "__main__":
     app = MainWindow()
