@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import Entry, Label, Button
 from PIL import Image, ImageTk
 from backend.authentication import authenticate_user
+import mysql.connector
 
 class LoginPage(tk.Frame):
     def __init__(self, master, show_admin_page, show_student_page):
@@ -74,11 +75,21 @@ class LoginPage(tk.Frame):
         pw = self.password.get()
 
         # Assuming authenticate_user returns True for successful authentication
-        if authenticate_user(username, pw):
-            if username == 'admin':
-                self.show_admin_page()
-            elif username == 'student':
-                self.show_student_page()
+        # if authenticate_user(username, pw):
+        #     if username == 'admin':
+        #         self.show_admin_page()
+        #     elif username == 'student':
+        #         self.show_student_page()
+
+        #authenticate_user returns the type of user that is logging in
+        user = authenticate_user(username,pw)
+        if user == 'admin':
+            self.show_admin_page()
+        elif user == 'student':
+            self.show_student_page()
+        elif user == 'invalid':
+            print('invalid sign in')
+            #invalid sign in label logic here
 
 if __name__ == "__main__":
     root = tk.Tk()

@@ -1,0 +1,7 @@
+
+CREATE TRIGGER IF NOT EXISTS generate_manager_username
+BEFORE INSERT ON Manager
+FOR EACH ROW
+BEGIN  
+    SET NEW.mUsername = CONCAT(LOWER(LEFT(NEW.mFirstName,1)),LOWER(NEW.mLastName),NEW.MID);
+END;
