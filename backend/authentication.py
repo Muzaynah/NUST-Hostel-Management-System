@@ -3,6 +3,7 @@
 import mysql.connector
 from config import db_config
 
+
 def authenticate_user(username, password):
     user =''
     #establishing a connection and then running queries to see if the username entered is of a staff/student

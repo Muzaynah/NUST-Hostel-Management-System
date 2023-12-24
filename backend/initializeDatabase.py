@@ -12,7 +12,7 @@ def initialize_database():
     con1 = mysql.connector.connect(
         host='localhost',
         user='root',
-        password='seecs@123')
+        password='pw')
     cur1 = con1.cursor()
     cur1.execute("CREATE DATABASE IF NOT EXISTS project")
     con1.commit()
@@ -50,15 +50,15 @@ def initialize_database():
     cursor.execute(sql_script)
     
     # RUN THESE ONCE !!!
-    #adding in a default student and admin:
-    # query = "INSERT INTO Student(cms,sFirstName,sLastName,sAge,sEmail,sPhoneNumber,city,street,house_no,roomNumber,sBatch,sPassword) VALUES (429551,'Maheen','Ahmed',19,'maheenahmed@gmail.com',03049991681,'Karachi','abc','xyz',316,2022,'seecs@123')"
-    # cursor.execute(query)
-    # connection.commit()
-    # query = "INSERT INTO Manager(MID,mFirstName,mLastName,mPassword) VALUES (1234,'John','Doe','seecs@123')"
-    # connection.commit()
-    # query = "INSERT INTO Student(cms,sFirstName,sLastName,sAge,sEmail,sPhoneNumber,city,street,house_no,roomNumber,sBatch,sPassword) VALUES (423482,'Muzaynah','Farrukh',19,'muzaynahfarrukh@gmail.com',123,'Karachi','abc','xyz',316,2022,'seecs@123')"
-    # cursor.execute(query)
-    # connection.commit()
+    # adding in a default student and admin:
+    #query = "INSERT INTO Student(cms,sFirstName,sLastName,sAge,sEmail,sPhoneNumber,city,street,house_no,roomNumber,sBatch,sPassword) VALUES (429551,'Maheen','Ahmed',19,'maheenahmed@gmail.com',03049991681,'Karachi','abc','xyz',316,2022,'seecs@123')"
+    #cursor.execute(query)
+    #connection.commit()
+    #query = "INSERT INTO Manager(MID,mFirstName,mLastName,mPassword) VALUES (1234,'John','Doe','seecs@123')"
+    #connection.commit()
+    #query = "INSERT INTO Student(cms,sFirstName,sLastName,sAge,sEmail,sPhoneNumber,city,street,house_no,roomNumber,sBatch,sPassword) VALUES (423482,'Muzaynah','Farrukh',19,'muzaynahfarrukh@gmail.com',123,'Karachi','abc','xyz',316,2022,'seecs@123')"
+    #cursor.execute(query)
+    #connection.commit()
 
     cursor.close()
     connection.close()
