@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import Button
 from frontend.login_page import LoginPage
-from frontend.admin_screen import AdminScreen
+from frontend.admin_dashboard import AdminDashboard
 from frontend.student_dashboard import StudentDashboard
 from frontend.student_outpass import StudentOutpass
 
@@ -15,45 +15,62 @@ class MainWindow(tk.Tk):
         self.iconbitmap('assets/nust_logo.ico')
 
         # Create login page and student/admin pages
-        self.login_page = LoginPage(self, self.show_admin_page, self.show_student_dashboard)
-        self.admin_screen = AdminScreen(self)
+        self.login_page = LoginPage(self, self.show_admin_dashboard, self.show_student_dashboard)
+        self.admin_dashboard = AdminDashboard(self, self.show_moutpass, self.show_mcomplaint, self.show_mattendance, self.show_mhostel, self.show_mstudent, self.show_mnotification)
         self.student_dashboard = StudentDashboard(self, self.show_outpass, self.show_complaints, self.show_attendance)
         self.student_outpass = StudentOutpass(self, self.show_student_dashboard)
 
+        #side panel for student ----------------------------------------
+        #HIDING FOR NOW
+
         # Create a frame for the side panel
-        self.side_panel = tk.Frame(self, bg='#F6f6f6', width=200)
+        self.student_side_panel = tk.Frame(self, bg='#1a2530', width=200)
 
         # Initially hide the side panel
-        self.side_panel.grid_forget()
-
+        self.student_side_panel.grid_forget()
+        
         # Add buttons to the side panel 
-        Button(self.side_panel, text='Edit Profile', command=self.show_edit_profile, bg='white', fg='black', width=25, height=2, font=('Helvetica', 10)).pack(pady=(20,0))
-        Button(self.side_panel, text='Student Dashboard', command=self.show_student_dashboard, bg='white', fg='black', width=25, height=2, font=('Helvetica', 10)).pack(pady=0)
-        Button(self.side_panel, text='Contact Admin', command=self.show_contact_admin, bg='white', fg='black', width=25, height=2, font=('Helvetica', 10)).pack(pady=0)
-        Button(self.side_panel, text='Settings', command=self.show_settings, bg='white', fg='black', width=25, height=2, font=('Helvetica', 10)).pack(pady=0)
-        Button(self.side_panel, text='Log Out', command=self.show_login_page, bg='#014a81', fg='white', width=25, height=2, font=('Helvetica', 10)).pack(pady=(0, 50), side=tk.BOTTOM, anchor=tk.S)
+        Button(self.student_side_panel, text='Edit Profile', command=self.show_edit_profile, bg='white', fg='black', border=0, width=25, height=2, font=('Helvetica', 10)).pack(padx=2, pady=(8,3))
+        Button(self.student_side_panel, text='Student Dashboard', command=self.show_student_dashboard, bg='white', fg='black', border=0, width=25, height=2, font=('Helvetica', 10)).pack(padx=6,pady=3)
+        Button(self.student_side_panel, text='Contact Admin', command=self.show_contact_admin, bg='white', fg='black', border=0, width=25, height=2, font=('Helvetica', 10)).pack(padx=6,pady=3)
+        Button(self.student_side_panel, text='Settings', command=self.show_settings, bg='white', fg='black', border=0, width=25, height=2, font=('Helvetica', 10)).pack(padx=6,pady=3)
+        Button(self.student_side_panel, text='Log Out', command=self.show_login_page, bg='#014a81', fg='white', border=0, width=25, height=2, font=('Helvetica', 10)).pack(padx=6,pady=(3, 50), side=tk.BOTTOM, anchor=tk.S)
+
+
+        #side panel for admin ----------------------------------------
+        # Create a frame for the side panel
+        self.admin_side_panel = tk.Frame(self, bg='#1a2530', width=200)
+
+        # Initially hide the side panel
+        #self.admin_side_panel.grid_forget()
+        
+        # Add buttons to the side panel 
+        Button(self.admin_side_panel, text='Edit Profile', command=self.show_edit_profile, bg='white', fg='black', border=0, width=25, height=2, font=('Helvetica', 10)).pack(padx=2, pady=(8,3))
+        Button(self.admin_side_panel, text='Admin Dashboard', command=self.show_admin_dashboard, bg='white', fg='black', border=0, width=25, height=2, font=('Helvetica', 10)).pack(padx=6,pady=3)
+        Button(self.admin_side_panel, text='Manage Students', command=self.show_contact_admin, bg='white', fg='black', border=0, width=25, height=2, font=('Helvetica', 10)).pack(padx=6,pady=3)
+        Button(self.admin_side_panel, text='Settings', command=self.show_settings, bg='white', fg='black', border=0, width=25, height=2, font=('Helvetica', 10)).pack(padx=6,pady=3)
+        Button(self.admin_side_panel, text='Log Out', command=self.show_login_page, bg='#014a81', fg='white', border=0, width=25, height=2, font=('Helvetica', 10)).pack(padx=6,pady=(3, 50), side=tk.BOTTOM, anchor=tk.S)
 
         # Set the login page as the initial page
         self.show_login_page()
-
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=0)  # Make the side panel fixed in width
 
-    def show_admin_page(self):
+    def show_admin_dashboard(self):
         # Switch to the admin screen
         self.login_page.grid_forget()  # Remove the login page
         self.student_dashboard.grid_forget()  # Remove the student dashboard if it's showing
-        self.admin_screen.grid(row=0, column=0, sticky='nsew')  # Show the admin screen
-        self.side_panel.grid_forget()  # Hide the side panel
+        self.admin_dashboard.grid(row=0, column=0, sticky='nsew')  # Show the admin screen
+        self.student_side_panel.grid_forget()  # Hide the side panel
 
     def show_student_dashboard(self):
         # Switch to the student dashboard
         self.login_page.grid_forget()  # Remove the login page
-        self.admin_screen.grid_forget()  # Remove the admin screen if it's showing
+        self.admin_dashboard.grid_forget()  # Remove the admin screen if it's showing
         self.student_outpass.grid_forget() # Remove the outpass screen if it is showing
         self.student_dashboard.grid(row=0, column=0, sticky='nsew')  # Show the student dashboard
-        self.side_panel.grid(row=0, column=1, sticky='ns')  # Show the side panel
+        self.student_side_panel.grid(row=0, column=1, sticky='ns')  # Show the side panel
 
     def show_edit_profile(self):
         # Your code to switch to the edit profile section goes here
@@ -69,12 +86,16 @@ class MainWindow(tk.Tk):
 
     def show_login_page(self):
         # Switch to the login page
-        self.admin_screen.grid_forget()  # Remove the admin screen if it's showing
+        self.admin_dashboard.grid_forget()  # Remove the admin screen if it's showing
         self.student_dashboard.grid_forget()  # Remove the student dashboard if it's showing
         self.login_page.grid(row=0, column=0, sticky='nsew')  # Show the login page
-        self.side_panel.grid_forget()  # Hide the side panel
+        self.student_side_panel.grid_forget()  # Hide the side panel
+        #self.student_side_panel.grid(row=0, column=1, sticky='ns') 
+        self.admin_side_panel.grid(row=0, column=1, sticky='ns') 
 
     # Functions to handle transitions to specific sections/screens
+        
+    # student buttons screens functions -------------------------------
     def show_complaints(self):
         # Your code to switch to the complaints section goes here
         print("Switching to Complaints Section")
@@ -88,7 +109,33 @@ class MainWindow(tk.Tk):
         print("Switching to Outpass Section")
         self.student_dashboard.grid_forget()  # Remove the student dashboard if it's showing
         self.student_outpass.grid(row=0, column=0, sticky='nsew')  # Show the student outpass screen
-        self.side_panel.grid(row=0, column=1, sticky='ns')  # Show the side panel
+        self.student_side_panel.grid(row=0, column=1, sticky='ns')  # Show the side panel
+
+    # admin buttons screens functions ------------------------------
+
+    def show_mhostel(self):
+        # Your code to switch to the complaints section goes here
+        print("Switching to hostel Section")
+
+    def show_mstudent(self):
+        # Your code to switch to the complaints section goes here
+        print("Switching to student Section")
+
+    def show_mnotification(self):
+        # Your code to switch to the complaints section goes here
+        print("Switching to notification Section")
+
+    def show_mcomplaint(self):
+        # Your code to switch to the complaints section goes here
+        print("Switching to admin Complaints Section")
+
+    def show_mattendance(self):
+        # Your code to switch to the attendance section goes here
+        print("Switching to admin Attendance Section")
+
+    def show_moutpass(self):
+        # Switch to the student outpass screen
+        print("Switching to admin Outpass Section")
 
 if __name__ == "__main__":
     app = MainWindow()

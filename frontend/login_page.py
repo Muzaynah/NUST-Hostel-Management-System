@@ -4,6 +4,12 @@ from PIL import Image, ImageTk
 from backend.authentication import authenticate_user
 import mysql.connector
 
+
+#1f2b38 dark
+#E0E6EE bg light
+#014a81 nust blue
+#2270ab lighter nust blue
+
 class LoginPage(tk.Frame):
     def __init__(self, master, show_admin_page, show_student_page):
         super().__init__(master)
@@ -13,19 +19,12 @@ class LoginPage(tk.Frame):
         self.create_widgets()
 
     def create_widgets(self):
-
         # Login frame
-        login_frame = tk.Frame(self, width=360, height=360, bg='white')
-        login_frame.pack(side="top", fill="both", expand=True)
+        login_frame = tk.Frame(self, width=360, height=360, bg='#1a2530')  # Use the same dark blue color
+        login_frame.pack(side="top", pady=160)
 
-        # Center the frame
-        self.master.update_idletasks()  # Update the window to get the correct size
-        x_coord = (self.master.winfo_width() - login_frame.winfo_reqwidth()) // 2
-        y_coord = (self.master.winfo_height() - login_frame.winfo_reqheight()) // 2
-        login_frame.place(x=x_coord, y=y_coord)
-
-        Label(login_frame, text='Sign In', fg='#408eed', bg='white',
-              font=('Microsoft YaHei UI Light', 23, 'bold')).pack(pady=10)
+        Label(login_frame, text='Sign In', fg='#3a80b5', bg='#1a2530',  # Use the same light blue color
+              font=('Microsoft YaHei UI Light', 26, 'bold')).pack(padx=20, pady=(40, 50))
 
         # Username
         def on_enter_username(e):
@@ -38,14 +37,14 @@ class LoginPage(tk.Frame):
             if name == '':
                 self.user.insert(0, 'Username')
 
-        self.user = Entry(login_frame, width=35, fg='black', border=0, bg='white',
+        self.user = Entry(login_frame, width=35, fg='white', border=0, bg='#1a2530',  # Use the same dark blue color
                           font=('Microsoft YaHei UI Light', 11))
         self.user.insert(0, 'Username')
         self.user.bind('<FocusIn>', on_enter_username)
         self.user.bind('<FocusOut>', on_leave_username)
-        self.user.pack(pady=10)
+        self.user.pack(padx=20, pady=10)
 
-        tk.Frame(login_frame, width=295, height=2, bg='black').pack()
+        tk.Frame(login_frame, width=295, height=2, bg='white').pack(padx=20)  # Use white color for the separator
 
         # Password
         def on_enter_password(e):
@@ -58,38 +57,30 @@ class LoginPage(tk.Frame):
             if pw == '':
                 self.password.insert(0, 'Password')
 
-        self.password = Entry(login_frame, width=35, fg='black', border=0, bg='white',
+        self.password = Entry(login_frame, width=35, fg='white', border=0, bg='#1a2530',  # Use the same dark blue color
                               font=('Microsoft YaHei UI Light', 11))
         self.password.insert(0, 'Password')
         self.password.bind('<FocusIn>', on_enter_password)
         self.password.bind('<FocusOut>', on_leave_password)
-        self.password.pack(pady=10)
+        self.password.pack(padx=20, pady=10)
 
-        tk.Frame(login_frame, width=295, height=2, bg='black').pack()
+        tk.Frame(login_frame, width=295, height=2, bg='white').pack(padx=20)  # Use white color for the separator
 
-        Button(login_frame, width=39, pady=7, text='Sign In', bg='#408eed', fg='white',
-               border=0, command=self.sign_in).pack(pady=20)
+        Button(login_frame, width=26, pady=6, text='Sign In', bg='#014a81', fg='white',font=('Microsoft YaHei UI Light', 14),
+               border=0, command=self.sign_in).pack(padx=30, pady=(130,30))
 
     def sign_in(self):
         username = self.user.get()
         pw = self.password.get()
 
-        # Assuming authenticate_user returns True for successful authentication
-        # if authenticate_user(username, pw):
-        #     if username == 'admin':
-        #         self.show_admin_page()
-        #     elif username == 'student':
-        #         self.show_student_page()
-
-        #authenticate_user returns the type of user that is logging in
-        user = authenticate_user(username,pw)
+        user = authenticate_user(username, pw)
         if user == 'admin':
             self.show_admin_page()
         elif user == 'student':
             self.show_student_page()
         elif user == 'invalid':
             print('invalid sign in')
-            #invalid sign in label logic here
+            # invalid sign-in label logic here
 
 if __name__ == "__main__":
     root = tk.Tk()

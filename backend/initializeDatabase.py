@@ -12,7 +12,7 @@ def initialize_database():
     con1 = mysql.connector.connect(
         host='localhost',
         user='root',
-        password='ISR@m@nsoor0785')
+        password='')
     cur1 = con1.cursor()
     cur1.execute("CREATE DATABASE IF NOT EXISTS project")
     con1.commit()
