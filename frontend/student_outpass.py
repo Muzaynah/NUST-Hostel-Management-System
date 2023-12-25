@@ -5,7 +5,7 @@
 db_config = {
     'host': 'localhost',
     'user': 'root',
-    'password': 'ISR@m@nsoor0785',
+    'password': 'seecs@123',
     'database': 'project',
     'raise_on_warnings': True
 }
