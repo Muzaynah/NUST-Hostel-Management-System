@@ -1,7 +1,21 @@
-# student_outpass.py
+# config.py
+# This file contains the database configuration (db_config) dictionary
+# Replace 'your_username', 'your_password', and 'your_database' with your actual MySQL credentials
+
+db_config = {
+    'host': 'localhost',
+    'user': 'root',
+    'password': 'ISR@m@nsoor0785',
+    'database': 'project',
+    'raise_on_warnings': True
+}
+
+# main.py
 import tkinter as tk
 from tkinter import Button, Entry, Label, Listbox, Scrollbar, StringVar, OptionMenu, messagebox
 from datetime import datetime
+import mysql.connector
+from config import db_config
 
 class StudentOutpass(tk.Frame):
     def __init__(self, master, show_dashboard):
@@ -98,11 +112,33 @@ class StudentOutpass(tk.Frame):
             messagebox.showerror("Error", "All fields must be filled.")
             return
 
-        # Placeholder function for submitting outpass request
-        leaving_date = f"{leaving_day}-{leaving_month}-{leaving_year}"
-        joining_date = f"{joining_day}-{joining_month}-{joining_year}"
+        try:
+            # Connect to the database
+            connection = mysql.connector.connect(**db_config)
+            cursor = connection.cursor()
 
-        print(f"Outpass submitted: Purpose={purpose}, Leaving Date={leaving_date}, Joining Date={joining_date}")
+            # Insert outpass data into the database
+            query = "INSERT INTO Outpass (LeavingDate, JoiningDate, Purpose, OStatus) VALUES (%s, %s, %s, 'Pending')"
+            
+            # Format LeavingDate and JoiningDate as datetime objects
+            leaving_date = datetime(int(leaving_year), int(leaving_month), int(leaving_day))
+            joining_date = datetime(int(joining_year), int(joining_month), int(joining_day))
+            
+            values = (leaving_date, joining_date, purpose)
+
+            cursor.execute(query, values)
+            connection.commit()
+
+            messagebox.showinfo("Success", "Outpass submitted successfully!")
+
+        except mysql.connector.Error as err:
+            messagebox.showerror("Error", f"Database Error: {err}")
+
+        finally:
+            # Close the database connection
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
 
 if __name__ == "__main__":
     root = tk.Tk()

@@ -12,7 +12,7 @@ def initialize_database():
     con1 = mysql.connector.connect(
         host='localhost',
         user='root',
-        password='pw')
+        password='ISR@m@nsoor0785')
     cur1 = con1.cursor()
     cur1.execute("CREATE DATABASE IF NOT EXISTS project")
     con1.commit()
@@ -49,8 +49,8 @@ def initialize_database():
         sql_script = sql_file.read()
     cursor.execute(sql_script)
     
-    # RUN THESE ONCE !!!
-    # adding in a default student and admin:
+    #RUN THESE ONCE !!!
+    #adding in a default student and admin:
     #query = "INSERT INTO Student(cms,sFirstName,sLastName,sAge,sEmail,sPhoneNumber,city,street,house_no,roomNumber,sBatch,sPassword) VALUES (429551,'Maheen','Ahmed',19,'maheenahmed@gmail.com',03049991681,'Karachi','abc','xyz',316,2022,'seecs@123')"
     #cursor.execute(query)
     #connection.commit()

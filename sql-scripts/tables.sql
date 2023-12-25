@@ -43,14 +43,14 @@ dname VARCHAR(50)
 );
 
 CREATE TABLE IF NOT EXISTS Outpass(
-	OID INT,
+    OID INT AUTO_INCREMENT,
     LeavingDate DATE NOT NULL,
     JoiningDate DATE NOT NULL,
     Purpose VARCHAR(100) NOT NULL,
-    OStatus VARCHAR(50) NOT NULL,
-    CONSTRAINT ostatus_constraint CHECK(OStatus IN ("Pending","Approved","Rejected")),
-	CONSTRAINT outpasspk PRIMARY KEY(OID),
-    CONSTRAINT date_validity CHECK(LeavingDate<JoiningDate)
+    OStatus VARCHAR(50) DEFAULT 'Pending' NOT NULL,
+    CONSTRAINT ostatus_constraint CHECK(OStatus IN ('Pending', 'Approved', 'Rejected')),
+    CONSTRAINT outpasspk PRIMARY KEY(OID),
+    CONSTRAINT date_validity CHECK(LeavingDate < JoiningDate)
 );
 
 
