@@ -12,53 +12,61 @@ def initialize_database():
     con1 = mysql.connector.connect(
         host='localhost',
         user='root',
-        password='')
+        password='seecs@123')
     cur1 = con1.cursor()
-    cur1.execute("CREATE DATABASE IF NOT EXISTS project")
-    con1.commit()
-    cur1.execute("USE project")
-    #the db is declared now if it didnt exist already 
-    #can call the config file with no issues
+    cur1.execute("SHOW DATABASES LIKE project")
+    result=cursor.fetchall()
 
-    connection = mysql.connector.connect(**db_config)
-    cursor = connection.cursor()
     
-    #procedure for running a whole script file------------------------------
+    # the following is supposed to run if the project database does NOT exist already
+    #it initializes the database with tables, triggers and constraints
+    if(len(result)==0):
+        cur1.execute("CREATE DATABASE IF NOT EXISTS project")
+        con1.commit()
+        cur1.execute("USE project")
+        #the db is declared now if it didnt exist already 
+        #can call the config file with no issues
 
-    with open(sql_script_path,'r') as sql_file:
-        sql_script = sql_file.read()
+        connection = mysql.connector.connect(**db_config)
+        cursor = connection.cursor()
     
-    #splitting the statements in the file 
-    sql_statements = sql_script.split(';')
-    for statement in sql_statements:
-        if statement.strip():  #to insure no blank statements execute
-            cursor.execute(statement)
-            connection.commit()
-    connection.commit()
+        #procedure for running a whole script file------------------------------
 
-    #running the trigger queries
-    with open(student_username_trigger_path,'r') as sql_file:
-        sql_script = sql_file.read()
-    cursor.execute(sql_script)
-    
-    with open(manager_username_trigger_path,'r') as sql_file:
-        sql_script = sql_file.read()
-    cursor.execute(sql_script)
+        with open(sql_script_path,'r') as sql_file:
+            sql_script = sql_file.read()
+        
+        #splitting the statements in the file 
+        sql_statements = sql_script.split(';')
+        for statement in sql_statements:
+            if statement.strip():  #to insure no blank statements execute
+                cursor.execute(statement)
+                connection.commit()
+        connection.commit()
 
-    with open(student_fulladdress_trigger_path,'r') as sql_file:
-        sql_script = sql_file.read()
-    cursor.execute(sql_script)
+        #running the trigger queries
+        with open(student_username_trigger_path,'r') as sql_file:
+            sql_script = sql_file.read()
+        cursor.execute(sql_script)
+        
+        with open(manager_username_trigger_path,'r') as sql_file:
+            sql_script = sql_file.read()
+        cursor.execute(sql_script)
+
+        with open(student_fulladdress_trigger_path,'r') as sql_file:
+            sql_script = sql_file.read()
+        cursor.execute(sql_script)
     
-    #RUN THESE ONCE !!!
-    #adding in a default student and admin:
-    #query = "INSERT INTO Student(cms,sFirstName,sLastName,sAge,sEmail,sPhoneNumber,city,street,house_no,roomNumber,sBatch,sPassword) VALUES (429551,'Maheen','Ahmed',19,'maheenahmed@gmail.com',03049991681,'Karachi','abc','xyz',316,2022,'seecs@123')"
-    #cursor.execute(query)
-    #connection.commit()
-    #query = "INSERT INTO Manager(MID,mFirstName,mLastName,mPassword) VALUES (1234,'John','Doe','seecs@123')"
-    #connection.commit()
-    #query = "INSERT INTO Student(cms,sFirstName,sLastName,sAge,sEmail,sPhoneNumber,city,street,house_no,roomNumber,sBatch,sPassword) VALUES (423482,'Muzaynah','Farrukh',19,'muzaynahfarrukh@gmail.com',123,'Karachi','abc','xyz',316,2022,'seecs@123')"
-    #cursor.execute(query)
-    #connection.commit()
+        #RUN THESE ONCE !!!
+        #adding in a default student and admin:
+        query = "INSERT INTO Student(cms,sFirstName,sLastName,sAge,sEmail,sPhoneNumber,city,street,house_no,roomNumber,sBatch,sPassword) VALUES (429551,'Maheen','Ahmed',19,'maheenahmed@gmail.com',03049991681,'Karachi','abc','xyz',316,2022,'seecs@123')"
+        cursor.execute(query)
+        connection.commit()
+        query = "INSERT INTO Manager(MID,mFirstName,mLastName,mPassword) VALUES (1234,'John','Doe','seecs@123')"
+        cursor.execute(query)
+        connection.commit()
+        query = "INSERT INTO Student(cms,sFirstName,sLastName,sAge,sEmail,sPhoneNumber,city,street,house_no,roomNumber,sBatch,sPassword) VALUES (423482,'Muzaynah','Farrukh',19,'muzaynahfarrukh@gmail.com',123,'Karachi','abc','xyz',316,2022,'seecs@123')"
+        cursor.execute(query)
+        connection.commit()
 
     cursor.close()
     connection.close()

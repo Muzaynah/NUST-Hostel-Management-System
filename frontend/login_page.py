@@ -73,12 +73,14 @@ class LoginPage(tk.Frame):
         username = self.user.get()
         pw = self.password.get()
 
-        user = authenticate_user(username, pw)
-        if user == 'admin':
-            self.show_admin_page()
-        elif user == 'student':
-            self.show_student_page()
-        elif user == 'invalid':
+        user_type, user_id = authenticate_user(username, pw)
+        if user_type == 'admin':
+            id = user_id
+            self.show_admin_page(id)
+        elif user_type == 'student':
+            id = user_id
+            self.show_student_page(id)
+        elif user_type == 'invalid':
             print('invalid sign in')
             # invalid sign-in label logic here
 

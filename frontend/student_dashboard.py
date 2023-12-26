@@ -1,5 +1,7 @@
 import tkinter as tk
 from tkinter import Label, Button, PhotoImage, Listbox, Scrollbar, messagebox
+import mysql.connector
+from config import db_config
 
 #1f2b38 dark
 #E0E6EE bg light
@@ -8,13 +10,17 @@ from tkinter import Label, Button, PhotoImage, Listbox, Scrollbar, messagebox
 
 
 class StudentDashboard(tk.Frame):
-    def __init__(self, master, show_outpass, show_complaints, show_attendance):
+    def __init__(self, master, show_outpass, show_complaints, show_attendance, user_id):
         super().__init__(master, bg='white')  # Set background color to white
         self.master = master
         self.show_outpass = show_outpass
         self.show_complaints = show_complaints
         self.show_attendance = show_attendance
         self.create_widgets()
+        self.user_id = user_id
+        self.create_student_view()
+        connection = mysql.connector.connect(**db_config)
+        cursor = connection.cursor()
 
     def show_notification_detail(self, event):
         selected_index = notification_listbox.curselection()
@@ -120,6 +126,12 @@ class StudentDashboard(tk.Frame):
 
         # Bind a callback to handle notification selection
         notification_listbox.bind('<<ListboxSelect>>', self.show_notification_detail)
+    
+    def create_student_view(self):
+        table_name = 'Student'
+        id_column_name = 'cms'
+
+        # query = "CREATE VIEW "+self.user_id+"_student AS SELECT * FROM "
 
 # Main application
 if __name__ == "__main__":
