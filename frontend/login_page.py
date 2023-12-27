@@ -3,7 +3,8 @@ from tkinter import Entry, Label, Button
 from PIL import Image, ImageTk
 from backend.authentication import authenticate_user
 import mysql.connector
-from config import current_user_id
+# from config import current_user_id
+import config
 
 #1f2b38 dark
 #E0E6EE bg light
@@ -11,6 +12,7 @@ from config import current_user_id
 #2270ab lighter nust blue
 
 class LoginPage(tk.Frame):
+    #,current_user_id
     def __init__(self, master, show_admin_dashboard, show_student_dashboard):
         super().__init__(master)
         self.master = master
@@ -66,23 +68,26 @@ class LoginPage(tk.Frame):
 
         tk.Frame(login_frame, width=295, height=2, bg='white').pack(padx=20)  # Use white color for the separator
 
+        # Button(login_frame, width=26, pady=6, text='Sign In', bg='#014a81', fg='white',font=('Microsoft YaHei UI Light', 14),
+        #        border=0, command=self.sign_in).pack(padx=30, pady=(130,30))
         Button(login_frame, width=26, pady=6, text='Sign In', bg='#014a81', fg='white',font=('Microsoft YaHei UI Light', 14),
-               border=0, command=self.sign_in).pack(padx=30, pady=(130,30))
+               border=0, command=self.sign_in).pack(padx=30, pady=(10,5))
 
     def sign_in(self):
-        global current_user_id
+        # global current_user_id
         username = self.user.get()
         pw = self.password.get()
 
         user_type, user_id = authenticate_user(username, pw)
         if user_type == 'admin':
             id = user_id
-            current_user_id = id
-            print(current_user_id)
+            config.current_user_id = id
+            print(config.current_user_id)
             self.show_admin_dashboard()
         elif user_type == 'student':
             id = user_id
-            current_user_id = id
+            config.current_user_id = id
+            print(config.current_user_id)
             self.show_student_dashboard()
         elif user_type == 'invalid':
             print('invalid sign in')

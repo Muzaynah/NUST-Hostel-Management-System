@@ -4,6 +4,8 @@ from frontend.login_page import LoginPage
 from frontend.admin_dashboard import AdminDashboard
 from frontend.student_dashboard import StudentDashboard
 from frontend.student_outpass import StudentOutpass
+# from config import current_user_id
+import config
 
 class MainWindow(tk.Tk):
     def __init__(self):
@@ -15,11 +17,14 @@ class MainWindow(tk.Tk):
         self.iconbitmap('assets/nust_logo.ico')
 
         # Create login page and student/admin pages
-        self.login_page = LoginPage(self, self.show_admin_dashboard, self.show_student_dashboard)
+        self.login_page = LoginPage(self, self.show_admin_dashboard, self.show_student_dashboard) #,self.current_user_id
         self.admin_dashboard = AdminDashboard(self, self.show_moutpass, self.show_mcomplaint, self.show_mattendance, self.show_mhostel, self.show_mstudent, self.show_mnotification)
-        self.student_dashboard = StudentDashboard(self, self.show_outpass, self.show_complaints, self.show_attendance)
-        # self.student_dashboard = None
+        # self.student_dashboard = StudentDashboard(self, self.show_outpass, self.show_complaints, self.show_attendance)
+        self.student_dashboard = None
         self.student_outpass = StudentOutpass(self, self.show_student_dashboard)
+
+        # global current_user_id
+        # self.current_user_id = current_user_id
 
         #side panel for student ----------------------------------------
         #HIDING FOR NOW
@@ -59,6 +64,10 @@ class MainWindow(tk.Tk):
         self.admin_side_panel.grid_forget()
         self.student_side_panel.grid_forget()
 
+    def create_student_dashboard(self):
+        # Create the student dashboard dynamically
+        self.student_dashboard = StudentDashboard(self, self.show_outpass, self.show_complaints, self.show_attendance)
+
     def show_admin_dashboard(self):
         # Switch to the admin screen
         self.login_page.grid_forget()  # Remove the login page
@@ -68,11 +77,17 @@ class MainWindow(tk.Tk):
         self.admin_side_panel.grid(row=0, column=1, sticky='ns') 
 
     def show_student_dashboard(self):
+        print(config.current_user_id)
         # Your existing code for show_student_dashboard goes here):
         # Switch to the student dashboard
         self.login_page.grid_forget()  # Remove the login page
         self.admin_dashboard.grid_forget()  # Remove the admin screen if it's showing
         self.student_outpass.grid_forget() # Remove the outpass screen if it is showing
+
+        if self.student_dashboard is None:
+
+            print('creating student dashboard')
+            self.create_student_dashboard()
         self.student_dashboard.grid(row=0, column=0, sticky='nsew')  # Show the student dashboard
         self.student_side_panel.grid(row=0, column=1, sticky='ns')  # Show the side panel
 
@@ -94,7 +109,8 @@ class MainWindow(tk.Tk):
     def show_login_page(self):
         # Switch to the login page
         self.admin_dashboard.grid_forget()  # Remove the admin screen if it's showing
-        self.student_dashboard.grid_forget()  # Remove the student dashboard if it's showing
+        if self.student_dashboard is not None:
+            self.student_dashboard.grid_forget()  # Remove the student dashboard if it's showing
         self.login_page.grid(row=0, column=0, sticky='nsew')  # Show the login page
         self.student_side_panel.grid_forget()
         

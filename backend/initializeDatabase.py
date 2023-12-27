@@ -10,11 +10,10 @@ def initialize_database():
     con1 = mysql.connector.connect(
         host='localhost',
         user='root',
-        password='')
+        password='seecs@123')
     cur1 = con1.cursor()
     cur1.execute("SHOW DATABASES LIKE 'project'")
     result=cur1.fetchall()
-    print(result)
 
     # the following is supposed to run if the project database does NOT exist already
     #it initializes the database with tables, triggers, constraints, and some default data

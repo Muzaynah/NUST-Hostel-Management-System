@@ -1,7 +1,8 @@
 import tkinter as tk
 from tkinter import Label, Button, PhotoImage, Listbox, Scrollbar, messagebox
 import mysql.connector
-from config import db_config, current_user_id
+from config import db_config
+import config
 
 # 1f2b38 dark
 # E0E6EE bg light
@@ -17,9 +18,10 @@ class StudentDashboard(tk.Frame):
         self.show_attendance = show_attendance
         self.connection = mysql.connector.connect(**db_config)
         self.cursor = self.connection.cursor()
-        self.view_name = ''
-        self.create_widgets()
+        self.view_name = str(config.current_user_id[0]) + '_student'
+        
         self.create_student_view()
+        self.create_widgets()
 
     def show_notification_detail(self, event):
         selected_index = notification_listbox.curselection()
@@ -28,9 +30,8 @@ class StudentDashboard(tk.Frame):
             messagebox.showinfo("Notification Detail", selected_text)
 
     def create_widgets(self):
-        global current_user_id
-        print(current_user_id)
-        if(current_user_id != None):
+        print(config.current_user_id)
+        if(config.current_user_id != -1):
             # Top panel displaying the student's name
             top_panel = tk.Frame(self, bg='#014a81')  # Use a light blue color
             top_panel.pack(side=tk.TOP, fill=tk.X)
@@ -63,39 +64,39 @@ class StudentDashboard(tk.Frame):
 
             # Create a label for the student's name and cms
             #get student name
-            query = f"SELECT CONCAT(sFirstName, ' ', sLastName) FROM {self.view_name} WHERE cms = {current_user_id}"
+            query = f"SELECT CONCAT(sFirstName, ' ', sLastName) FROM {self.view_name} WHERE cms = {config.current_user_id[0]}"
             self.cursor.execute(query)
             student_name = self.cursor.fetchone()
 
             #get student id
-            CMS_id = current_user_id
+            CMS_id = config.current_user_id
 
             #get department
-            query = f'SELECT dname FROM {self.view_name} WHERE cms = {current_user_id}'
+            query = f'SELECT dname FROM {self.view_name} WHERE cms = {config.current_user_id[0]}'
             self.cursor.execute(query)
             student_department = self.cursor.fetchone()
 
             #get program
-            query = f'SELECT sProgram FROM {self.view_name} WHERE cms = {current_user_id}'
+            query = f'SELECT sProgram FROM {self.view_name} WHERE cms = {config.current_user_id[0]}'
             self.cursor.execute(query)
             student_program = self.cursor.fetchone()
 
             #get hostel
-            query = f'SELECT sHostel FROM {self.view_name} WHERE cms = {current_user_id}'
+            query = f'SELECT hName FROM {self.view_name} WHERE cms = {config.current_user_id[0]}'
             self.cursor.execute(query)
             student_hostel = self.cursor.fetchone()
 
             #get hostel
-            query = f'SELECT sRoomNumber FROM {self.view_name} WHERE cms = {current_user_id}'
+            query = f'SELECT sRoomNumber FROM {self.view_name} WHERE cms = {config.current_user_id[0]}'
             self.cursor.execute(query)
             student_room = self.cursor.fetchone()
 
-            student_name_label = Label(top_panel, text=f"{student_name}\n\n{CMS_id}",
+            student_name_label = Label(top_panel, text=f"{student_name[0]}\n\n{CMS_id[0]}",
                                     font=('Helvetica', 14), bg='#014a81', fg='white', anchor=tk.W, justify=tk.LEFT)
             student_name_label.pack(side=tk.LEFT, padx=100, pady=10)
 
             # Create a label for more of the student's information
-            student_info_label = Label(top_panel, text=f"{student_department}\t\t\t{student_program}\n\n{student_hostel}\t\t{student_room}",
+            student_info_label = Label(top_panel, text=f"{student_department[0]}\t\t\t{student_program[0]}\n\n{student_hostel[0]}\t\t{student_room[0]}",
                                     font=('Helvetica', 14), bg='#014a81', fg='white', anchor=tk.E, justify=tk.LEFT)
             student_info_label.pack(side=tk.RIGHT, padx=100, pady=10)
 
@@ -159,18 +160,20 @@ class StudentDashboard(tk.Frame):
     
     def create_student_view(self):
 
-        if(current_user_id != None):
+        if(config.current_user_id != -1):
             #first check if the view for the student logged in
             #if it exists then do nothing
             #if it doesnt exist then create it
 
-            query = f"SELECT {current_user_id}_student_view from information_schema.views where table_name = '{current_user_id}_student_view'"
+            query = f"SELECT table_name from information_schema.views where table_name = '{self.view_name}';" #{config.current_user_id[0]}_student_view
             self.cursor.execute(query)
             result = self.cursor.fetchall()
-            if result.length==0:
-                view_name=current_user_id + '_student_view'
+            print(result)
+            if len(result)==0:
+                print('creating view '+ self.view_name)
+                # self.view_name=config.current_user_id[0] + '_student_view'
                 query = f'''
-                        CREATE VIEW {view_name} AS 
+                        CREATE VIEW {self.view_name} AS 
                         SELECT 
                             s.cms,
                             s.sFirstName,
@@ -214,13 +217,13 @@ class StudentDashboard(tk.Frame):
                         LEFT JOIN Outpass AS o ON s.cms = o.cms
                         LEFT JOIN Complaint AS c ON s.cms = c.cms
                         LEFT JOIN AttendanceEvent AS a ON s.cms = a.cms
-                        WHERE s.cms = {current_user_id};
+                        WHERE s.cms = {config.current_user_id[0]};
                 '''
                 
                 self.cursor.execute(query)
                 self.connection.commit()
             else:
-                print(view_name + 'already exists')
+                print(self.view_name + 'already exists')
 
 # Main application
 if __name__ == "__main__":
