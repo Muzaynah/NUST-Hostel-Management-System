@@ -8,7 +8,6 @@ from config import db_config, current_user_id
 # 014a81 nust blue
 # 2270ab lighter nust blue
 
-
 class StudentDashboard(tk.Frame):
     def __init__(self, master, show_outpass, show_complaints, show_attendance):
         super().__init__(master, bg='white')  # Set background color to white
@@ -29,6 +28,8 @@ class StudentDashboard(tk.Frame):
             messagebox.showinfo("Notification Detail", selected_text)
 
     def create_widgets(self):
+        global current_user_id
+        print(current_user_id)
         if(current_user_id != None):
             # Top panel displaying the student's name
             top_panel = tk.Frame(self, bg='#014a81')  # Use a light blue color

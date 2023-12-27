@@ -70,6 +70,7 @@ class LoginPage(tk.Frame):
                border=0, command=self.sign_in).pack(padx=30, pady=(130,30))
 
     def sign_in(self):
+        global current_user_id
         username = self.user.get()
         pw = self.password.get()
 
@@ -77,14 +78,14 @@ class LoginPage(tk.Frame):
         if user_type == 'admin':
             id = user_id
             current_user_id = id
-            self.show_admin_dashboard(id)
+            print(current_user_id)
+            self.show_admin_dashboard()
         elif user_type == 'student':
             id = user_id
             current_user_id = id
-            self.show_student_dashboard(id)
+            self.show_student_dashboard()
         elif user_type == 'invalid':
             print('invalid sign in')
-            # invalid sign-in label logic here
 
 if __name__ == "__main__":
     root = tk.Tk()

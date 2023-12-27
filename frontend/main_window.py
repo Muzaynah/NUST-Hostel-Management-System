@@ -41,9 +41,6 @@ class MainWindow(tk.Tk):
         #side panel for admin ----------------------------------------
         # Create a frame for the side panel
         self.admin_side_panel = tk.Frame(self, bg='#1a2530', width=200)
-
-        # Initially hide the side panel
-        #self.admin_side_panel.grid_forget()
         
         # Add buttons to the side panel 
         Button(self.admin_side_panel, text='Edit Profile', command=self.show_edit_profile, bg='white', fg='black', border=0, width=25, height=2, font=('Helvetica', 10)).pack(padx=2, pady=(8,3))
@@ -58,14 +55,20 @@ class MainWindow(tk.Tk):
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=0)  # Make the side panel fixed in width
 
+        # Initially hide the side panel
+        self.admin_side_panel.grid_forget()
+        self.student_side_panel.grid_forget()
+
     def show_admin_dashboard(self):
         # Switch to the admin screen
         self.login_page.grid_forget()  # Remove the login page
         self.student_dashboard.grid_forget()  # Remove the student dashboard if it's showing
         self.admin_dashboard.grid(row=0, column=0, sticky='nsew')  # Show the admin screen
         self.student_side_panel.grid_forget()  # Hide the side panel
+        self.admin_side_panel.grid(row=0, column=1, sticky='ns') 
 
     def show_student_dashboard(self):
+        # Your existing code for show_student_dashboard goes here):
         # Switch to the student dashboard
         self.login_page.grid_forget()  # Remove the login page
         self.admin_dashboard.grid_forget()  # Remove the admin screen if it's showing
@@ -76,24 +79,25 @@ class MainWindow(tk.Tk):
     def show_edit_profile(self):
         # Your code to switch to the edit profile section goes here
         print("Switching to Edit Profile Section")
+        self.student_side_panel.grid(row=0, column=1, sticky='ns')
 
     def show_contact_admin(self):
         # Your code to switch to the contact admin section goes here
         print("Switching to Contact Admin Section")
+        self.student_side_panel.grid(row=0, column=1, sticky='ns')
 
     def show_settings(self):
         # Your code to switch to the settings section goes here
         print("Switching to Settings Section")
+        self.student_side_panel.grid(row=0, column=1, sticky='ns')
 
     def show_login_page(self):
         # Switch to the login page
         self.admin_dashboard.grid_forget()  # Remove the admin screen if it's showing
         self.student_dashboard.grid_forget()  # Remove the student dashboard if it's showing
         self.login_page.grid(row=0, column=0, sticky='nsew')  # Show the login page
-        self.student_side_panel.grid_forget()  # Hide the side panel
-        #self.student_side_panel.grid(row=0, column=1, sticky='ns') 
-        self.admin_side_panel.grid(row=0, column=1, sticky='ns') 
-
+        self.student_side_panel.grid_forget()
+        
     # Functions to handle transitions to specific sections/screens
         
     # student buttons screens functions -------------------------------
@@ -113,30 +117,35 @@ class MainWindow(tk.Tk):
         self.student_side_panel.grid(row=0, column=1, sticky='ns')  # Show the side panel
 
     # admin buttons screens functions ------------------------------
-
     def show_mhostel(self):
         # Your code to switch to the complaints section goes here
         print("Switching to hostel Section")
+        self.admin_side_panel.grid(row=0, column=1, sticky='ns') 
 
     def show_mstudent(self):
         # Your code to switch to the complaints section goes here
         print("Switching to student Section")
+        self.admin_side_panel.grid(row=0, column=1, sticky='ns') 
 
     def show_mnotification(self):
         # Your code to switch to the complaints section goes here
         print("Switching to notification Section")
+        self.admin_side_panel.grid(row=0, column=1, sticky='ns') 
 
     def show_mcomplaint(self):
         # Your code to switch to the complaints section goes here
         print("Switching to admin Complaints Section")
+        self.admin_side_panel.grid(row=0, column=1, sticky='ns') 
 
     def show_mattendance(self):
         # Your code to switch to the attendance section goes here
         print("Switching to admin Attendance Section")
+        self.admin_side_panel.grid(row=0, column=1, sticky='ns') 
 
     def show_moutpass(self):
         # Switch to the student outpass screen
         print("Switching to admin Outpass Section")
+        self.admin_side_panel.grid(row=0, column=1, sticky='ns') 
 
 if __name__ == "__main__":
     app = MainWindow()
