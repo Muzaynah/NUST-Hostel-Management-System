@@ -18,6 +18,7 @@ class MainWindow(tk.Tk):
         self.login_page = LoginPage(self, self.show_admin_dashboard, self.show_student_dashboard)
         self.admin_dashboard = AdminDashboard(self, self.show_moutpass, self.show_mcomplaint, self.show_mattendance, self.show_mhostel, self.show_mstudent, self.show_mnotification)
         self.student_dashboard = StudentDashboard(self, self.show_outpass, self.show_complaints, self.show_attendance)
+        # self.student_dashboard = None
         self.student_outpass = StudentOutpass(self, self.show_student_dashboard)
 
         #side panel for student ----------------------------------------

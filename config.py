@@ -1,5 +1,8 @@
 # configs that can be altered
 
+
+current_user_id = None
+
 db_config = {
     'host': 'localhost',
     'user': 'root',

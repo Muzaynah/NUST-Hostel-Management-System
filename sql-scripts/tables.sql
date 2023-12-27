@@ -13,10 +13,11 @@ city VARCHAR(50) NOT NULL,
 street VARCHAR(10) NOT NULL,
 house_no VARCHAR(10) NOT NULL,
 full_address VARCHAR(150),
-roomNumber INT NOT NULL,
+sRoomNumber INT NOT NULL,
 sBatch INT NOT NULL,
 sUsername VARCHAR(50),
 sPassword VARCHAR(50) NOT NULL,
+sProgram VARCHAR(50),
 HID INT,
 dID INT,
 CONSTRAINT PkStudent PRIMARY KEY (cms)
@@ -84,6 +85,13 @@ CREATE TABLE IF NOT EXISTS AttendanceEvent(
     CONSTRAINT attendanceeventpk PRIMARY KEY(ADate, cms)
 );
 
+CREATE TABLE IF NOT EXISTS Notifications(
+    NID INT AUTO_INCREMENT,
+    NText VARCHAR(1000),
+    NDate DATE NOT NULL,
+    HID INT,
+    CONSTRAINT notificationspk PRIMARY KEY(NID)
+);
 
 ALTER TABLE Manager
 ADD CONSTRAINT Manager_Hostel_Fk
@@ -112,3 +120,7 @@ FOREIGN KEY(cms) REFERENCES Student(cms);
 ALTER TABLE Outpass
 ADD CONSTRAINT Outpass_Student_Fk
 FOREIGN KEY(cms) REFERENCES Student(cms);
+
+ALTER TABLE Notifications
+ADD CONSTRAINT Notifications_Hostel_Fk
+FOREIGN KEY(HID) REFERENCES Hostel(HID);

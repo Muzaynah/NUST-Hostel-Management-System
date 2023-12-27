@@ -3,7 +3,7 @@ from tkinter import Entry, Label, Button
 from PIL import Image, ImageTk
 from backend.authentication import authenticate_user
 import mysql.connector
-
+from config import current_user_id
 
 #1f2b38 dark
 #E0E6EE bg light
@@ -11,11 +11,11 @@ import mysql.connector
 #2270ab lighter nust blue
 
 class LoginPage(tk.Frame):
-    def __init__(self, master, show_admin_page, show_student_page):
+    def __init__(self, master, show_admin_dashboard, show_student_dashboard):
         super().__init__(master)
         self.master = master
-        self.show_admin_page = show_admin_page
-        self.show_student_page = show_student_page
+        self.show_admin_dashboard = show_admin_dashboard
+        self.show_student_dashboard = show_student_dashboard
         self.create_widgets()
 
     def create_widgets(self):
@@ -76,17 +76,19 @@ class LoginPage(tk.Frame):
         user_type, user_id = authenticate_user(username, pw)
         if user_type == 'admin':
             id = user_id
-            self.show_admin_page(id)
+            current_user_id = id
+            self.show_admin_dashboard(id)
         elif user_type == 'student':
             id = user_id
-            self.show_student_page(id)
+            current_user_id = id
+            self.show_student_dashboard(id)
         elif user_type == 'invalid':
             print('invalid sign in')
             # invalid sign-in label logic here
 
 if __name__ == "__main__":
     root = tk.Tk()
-    app = LoginPage(root, show_admin_page=lambda: print("Admin Page"),
-                    show_student_page=lambda: print("Student Page"))
+    app = LoginPage(root, show_admin_dashboard=lambda: print("Admin Page"),
+                    show_student_dashboard=lambda: print("Student Page"))
     app.pack()
     root.mainloop()

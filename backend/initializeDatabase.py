@@ -5,8 +5,6 @@ from config import db_config, sql_script_path, manager_username_trigger_path, st
 
 def initialize_database():
 
-    print('initializing db...')
-
     #first make a random connection and create a project database
     #then make a connection with the config (including the name of the database)
     con1 = mysql.connector.connect(
@@ -14,13 +12,14 @@ def initialize_database():
         user='root',
         password='seecs@123')
     cur1 = con1.cursor()
-    cur1.execute("SHOW DATABASES LIKE project")
-    result=cursor.fetchall()
+    cur1.execute("SHOW DATABASES LIKE 'project'")
+    result=cur1.fetchall()
+    print(result)
 
-    
     # the following is supposed to run if the project database does NOT exist already
-    #it initializes the database with tables, triggers and constraints
+    #it initializes the database with tables, triggers, constraints, and some default data
     if(len(result)==0):
+        print('initializing db...')
         cur1.execute("CREATE DATABASE IF NOT EXISTS project")
         con1.commit()
         cur1.execute("USE project")
@@ -57,16 +56,23 @@ def initialize_database():
         cursor.execute(sql_script)
     
         #RUN THESE ONCE !!!
-        #adding in a default student and admin:
-        query = "INSERT INTO Student(cms,sFirstName,sLastName,sAge,sEmail,sPhoneNumber,city,street,house_no,roomNumber,sBatch,sPassword) VALUES (429551,'Maheen','Ahmed',19,'maheenahmed@gmail.com',03049991681,'Karachi','abc','xyz',316,2022,'seecs@123')"
+        #adding in default students and admin:
+        query = "INSERT INTO Student(cms,sFirstName,sLastName,sAge,sEmail,sPhoneNumber,city,street,house_no,sRoomNumber,sBatch,sPassword) VALUES (429551,'Maheen','Ahmed',19,'maheenahmed@gmail.com',03049991681,'Karachi','abc','xyz',316,2022,'seecs@123')"
         cursor.execute(query)
         connection.commit()
         query = "INSERT INTO Manager(MID,mFirstName,mLastName,mPassword) VALUES (1234,'John','Doe','seecs@123')"
         cursor.execute(query)
         connection.commit()
-        query = "INSERT INTO Student(cms,sFirstName,sLastName,sAge,sEmail,sPhoneNumber,city,street,house_no,roomNumber,sBatch,sPassword) VALUES (423482,'Muzaynah','Farrukh',19,'muzaynahfarrukh@gmail.com',123,'Karachi','abc','xyz',316,2022,'seecs@123')"
+        query = "INSERT INTO Student(cms,sFirstName,sLastName,sAge,sEmail,sPhoneNumber,city,street,house_no,sRoomNumber,sBatch,sPassword) VALUES (423482,'Muzaynah','Farrukh',19,'muzaynahfarrukh@gmail.com',123,'Karachi','abc','xyz',316,2022,'seecs@123')"
         cursor.execute(query)
         connection.commit()
 
-    cursor.close()
-    connection.close()
+        query = "INSERT INTO Student(cms,sFirstName,sLastName,sAge,sEmail,sPhoneNumber,city,street,house_no,sRoomNumber,sBatch,sPassword) VALUES (404520,'Isra','Mansoor',19,'isramansoor@gmail.com',123,'Islamabad','abc','xyz',428,2022,'seecs@123')"
+        cursor.execute(query)
+        connection.commit()
+        cursor.close()
+        connection.close()
+    else:
+        print('using existing db')
+    cur1.close()
+    con1.close()
