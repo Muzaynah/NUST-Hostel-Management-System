@@ -18,7 +18,7 @@ def authenticate_user(username, password):
         cms=result[0]
         return ('student',cms)
     
-    query = "SELECT MID FROM manager WHERE mUsername == '"+username+"' and mPassword == '"+password+"';"
+    query = "SELECT MID FROM manager WHERE mUsername = '"+username+"' and mPassword = '"+password+"';"
     cursor.execute(query)
     result = cursor.fetchall()
     if(len(result)>0):
