@@ -126,6 +126,8 @@ class MainWindow(tk.Tk):
         # Your code to switch to the complaints section goes here
         print("Switching to Complaints Section")
         self.student_dashboard.grid_forget()  # Remove the student dashboard if it's showing
+        self.student_outpass.grid_forget()
+        self.student_attendance.grid_forget()
         self.student_complaint.grid(row=0, column=0, sticky='nsew')  # Show the student outpass screen
         self.student_side_panel.grid(row=0, column=1, sticky='ns')  # Show the side panel
 
@@ -133,6 +135,9 @@ class MainWindow(tk.Tk):
         # Your code to switch to the attendance section goes here
         print("Switching to Attendance Section")
         self.student_dashboard.grid_forget()  # Remove the student dashboard if it's showing
+        self.student_complaint.grid_forget()
+        self.student_outpass.grid_forget()
+        
         self.student_attendance.grid(row=0, column=0, sticky='nsew')  # Show the student outpass screen
         self.student_side_panel.grid(row=0, column=1, sticky='ns')  # Show the side panel
 
@@ -140,6 +145,8 @@ class MainWindow(tk.Tk):
         # Switch to the student outpass screen
         print("Switching to Outpass Section")
         self.student_dashboard.grid_forget()  # Remove the student dashboard if it's showing
+        self.student_complaint.grid_forget()
+        self.student_attendance.grid_forget()
         self.student_outpass.grid(row=0, column=0, sticky='nsew')  # Show the student outpass screen
         self.student_side_panel.grid(row=0, column=1, sticky='ns')  # Show the side panel
 

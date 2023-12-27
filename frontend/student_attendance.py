@@ -9,4 +9,4 @@ class StudentAttendance(tk.Frame):
         super().__init__(master)
         self.master = master
         self.show_dashboard = show_dashboard
-        self.create_widgets()
+        #self.create_widgets()
