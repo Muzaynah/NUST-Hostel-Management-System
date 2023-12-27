@@ -79,15 +79,15 @@ class LoginPage(tk.Frame):
         pw = self.password.get()
 
         user_type, user_id = authenticate_user(username, pw)
-        if user_type == 'admin':
+        if user_type == 'manager':
             id = user_id
             config.current_user_id = id
-            print(config.current_user_id)
+            print('manager logging in')
             self.show_admin_dashboard()
         elif user_type == 'student':
             id = user_id
             config.current_user_id = id
-            print(config.current_user_id)
+            print('student logging in')
             self.show_student_dashboard()
         elif user_type == 'invalid':
             print('invalid sign in')

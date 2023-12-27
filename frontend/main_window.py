@@ -24,9 +24,9 @@ class MainWindow(tk.Tk):
         self.admin_dashboard = AdminDashboard(self, self.show_moutpass, self.show_mcomplaint, self.show_mattendance, self.show_mhostel, self.show_mstudent, self.show_mnotification)
         # self.student_dashboard = StudentDashboard(self, self.show_outpass, self.show_complaints, self.show_attendance)
         self.student_dashboard = None
-        self.student_outpass = StudentOutpass(self, self.show_student_dashboard)
-        self.student_attendance = StudentAttendance(self,self.show_student_dashboard)
-        self.student_complaint = StudentComplaint(self,self.show_student_dashboard)
+        self.student_outpass = None
+        self.student_attendance = None
+        self.student_complaint = None
 
         # global current_user_id
         # self.current_user_id = current_user_id
@@ -72,11 +72,15 @@ class MainWindow(tk.Tk):
     def create_student_dashboard(self):
         # Create the student dashboard dynamically
         self.student_dashboard = StudentDashboard(self, self.show_outpass, self.show_complaints, self.show_attendance)
+        self.student_outpass = StudentOutpass(self, self.show_student_dashboard)
+        self.student_attendance = StudentAttendance(self,self.show_student_dashboard)
+        self.student_complaint = StudentComplaint(self,self.show_student_dashboard)
 
     def show_admin_dashboard(self):
         # Switch to the admin screen
         self.login_page.grid_forget()  # Remove the login page
-        self.student_dashboard.grid_forget()  # Remove the student dashboard if it's showing
+        if(self.student_dashboard is not None):
+            self.student_dashboard.grid_forget()  # Remove the student dashboard if it's showing
         self.admin_dashboard.grid(row=0, column=0, sticky='nsew')  # Show the admin screen
         self.student_side_panel.grid_forget()  # Hide the side panel
         self.admin_side_panel.grid(row=0, column=1, sticky='ns') 
@@ -87,7 +91,12 @@ class MainWindow(tk.Tk):
         # Switch to the student dashboard
         self.login_page.grid_forget()  # Remove the login page
         self.admin_dashboard.grid_forget()  # Remove the admin screen if it's showing
-        self.student_outpass.grid_forget() # Remove the outpass screen if it is showing
+        if(self.student_outpass is not None):
+            self.student_outpass.grid_forget() # Remove the outpass screen if it is showing
+        if(self.student_attendance is not None):
+            self.student_attendance.grid_forget()
+        if(self.student_complaint is not None):
+            self.student_complaint.grid_forget()
 
         if self.student_dashboard is None:
 
@@ -125,18 +134,24 @@ class MainWindow(tk.Tk):
     def show_complaints(self):
         # Your code to switch to the complaints section goes here
         print("Switching to Complaints Section")
-        self.student_dashboard.grid_forget()  # Remove the student dashboard if it's showing
-        self.student_outpass.grid_forget()
-        self.student_attendance.grid_forget()
+        if(self.student_dashboard is not None):
+            self.student_dashboard.grid_forget()  # Remove the student dashboard if it's showing
+        if(self.student_outpass is not None):
+            self.student_outpass.grid_forget()
+        if(self.student_attendance is not None):
+            self.student_attendance.grid_forget()
         self.student_complaint.grid(row=0, column=0, sticky='nsew')  # Show the student outpass screen
         self.student_side_panel.grid(row=0, column=1, sticky='ns')  # Show the side panel
 
     def show_attendance(self):
         # Your code to switch to the attendance section goes here
         print("Switching to Attendance Section")
-        self.student_dashboard.grid_forget()  # Remove the student dashboard if it's showing
-        self.student_complaint.grid_forget()
-        self.student_outpass.grid_forget()
+        if(self.student_dashboard is not None):
+            self.student_dashboard.grid_forget()  # Remove the student dashboard if it's showing
+        if(self.student_complaint is not None):
+            self.student_complaint.grid_forget()
+        if(self.student_outpass is not None):
+            self.student_outpass.grid_forget()
         
         self.student_attendance.grid(row=0, column=0, sticky='nsew')  # Show the student outpass screen
         self.student_side_panel.grid(row=0, column=1, sticky='ns')  # Show the side panel
@@ -144,9 +159,12 @@ class MainWindow(tk.Tk):
     def show_outpass(self):
         # Switch to the student outpass screen
         print("Switching to Outpass Section")
-        self.student_dashboard.grid_forget()  # Remove the student dashboard if it's showing
-        self.student_complaint.grid_forget()
-        self.student_attendance.grid_forget()
+        if(self.student_dashboard is not None):
+            self.student_dashboard.grid_forget()  # Remove the student dashboard if it's showing
+        if(self.student_complaint is not None):
+            self.student_complaint.grid_forget()
+        if(self.student_attendance is not None):
+            self.student_attendance.grid_forget()
         self.student_outpass.grid(row=0, column=0, sticky='nsew')  # Show the student outpass screen
         self.student_side_panel.grid(row=0, column=1, sticky='ns')  # Show the side panel
 
