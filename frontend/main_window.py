@@ -4,6 +4,9 @@ from frontend.login_page import LoginPage
 from frontend.admin_dashboard import AdminDashboard
 from frontend.student_dashboard import StudentDashboard
 from frontend.student_outpass import StudentOutpass
+from frontend.student_complaint import StudentComplaint
+from frontend.student_attendance import StudentAttendance
+
 # from config import current_user_id
 import config
 
@@ -22,6 +25,8 @@ class MainWindow(tk.Tk):
         # self.student_dashboard = StudentDashboard(self, self.show_outpass, self.show_complaints, self.show_attendance)
         self.student_dashboard = None
         self.student_outpass = StudentOutpass(self, self.show_student_dashboard)
+        self.student_attendance = StudentAttendance(self,self.show_student_dashboard)
+        self.student_complaint = StudentComplaint(self,self.show_student_dashboard)
 
         # global current_user_id
         # self.current_user_id = current_user_id
@@ -120,10 +125,16 @@ class MainWindow(tk.Tk):
     def show_complaints(self):
         # Your code to switch to the complaints section goes here
         print("Switching to Complaints Section")
+        self.student_dashboard.grid_forget()  # Remove the student dashboard if it's showing
+        self.student_complaint.grid(row=0, column=0, sticky='nsew')  # Show the student outpass screen
+        self.student_side_panel.grid(row=0, column=1, sticky='ns')  # Show the side panel
 
     def show_attendance(self):
         # Your code to switch to the attendance section goes here
         print("Switching to Attendance Section")
+        self.student_dashboard.grid_forget()  # Remove the student dashboard if it's showing
+        self.student_attendance.grid(row=0, column=0, sticky='nsew')  # Show the student outpass screen
+        self.student_side_panel.grid(row=0, column=1, sticky='ns')  # Show the side panel
 
     def show_outpass(self):
         # Switch to the student outpass screen
