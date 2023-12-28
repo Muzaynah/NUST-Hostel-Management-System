@@ -7,7 +7,7 @@ from frontend.student_outpass import StudentOutpass
 from frontend.student_complaint import StudentComplaint
 from frontend.student_attendance import StudentAttendance
 
-# from frontend.admin_attendance import AdminAttendance
+from frontend.admin_attendance import AdminAttendance
 from frontend.admin_student import AdminStudent, AddStudentWindow
 
 # from config import current_user_id
@@ -91,6 +91,7 @@ class MainWindow(tk.Tk):
         # Create the student dashboard dynamically
         self.admin_dashboard = AdminDashboard(self, self.show_moutpass, self.show_mcomplaint, self.show_mattendance, self.show_mhostel, self.show_mstudent, self.show_mnotification)
         self.admin_student = AdminStudent(self, self.show_admin_dashboard)
+        self.admin_attendance = AdminAttendance(self)
 
     def show_admin_dashboard(self):
         # Switch to the admin screen
@@ -215,7 +216,7 @@ class MainWindow(tk.Tk):
         if(self.admin_outpass is not None):
             self.admin_outpass.grid_forget()
         if(self.admin_attendance is not None):
-            self.admin_attendance.grid_forget()
+            self.admin_atstendance.grid_forget()
 
         self.admin_student.grid(row=0, column=0, sticky='nsew')  
 
