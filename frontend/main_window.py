@@ -91,8 +91,6 @@ class MainWindow(tk.Tk):
         # Create the student dashboard dynamically
         self.admin_dashboard = AdminDashboard(self, self.show_moutpass, self.show_mcomplaint, self.show_mattendance, self.show_mhostel, self.show_mstudent, self.show_mnotification)
         self.admin_student = AdminStudent(self, self.show_admin_dashboard)
-        self.admin_student = AddStudentWindow(self, self.show_admin_dashboard)
-
 
     def show_admin_dashboard(self):
         # Switch to the admin screen
@@ -224,7 +222,7 @@ class MainWindow(tk.Tk):
     def show_add_student(self):
         # Show the add student window
         print("Adding student:")
-        add_student_window = AddStudentWindow(self, self.add_student)
+        self.add_student_window = AddStudentWindow(self, self.add_student)
 
     def add_student(self, student_data):
         # Handle adding a new student to the database (you need to implement this part)

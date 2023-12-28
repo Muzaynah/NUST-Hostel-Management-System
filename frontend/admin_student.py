@@ -33,9 +33,9 @@ class AdminStudent(tk.Frame):
         scrollbar.pack(side='right', fill='y')
         self.student_tree.configure(yscrollcommand=scrollbar.set)
 
-        # Add a button to open the add student window
-        add_student_button = Button(self, text='Add Student', command=self.show_add_student, bg='#1a2530', fg='white', border=0, width=25, height=1,
-                                    font=('Microsoft YaHei UI Light', 14))
+        add_student_button = Button(self, text='Add Student', command=self.master.show_add_student, bg='#1a2530', fg='white', border=0, width=20, height=1,
+                            font=('Microsoft YaHei UI Light', 14))
+
         add_student_button.pack(pady=40)
 
     def update_student_table(self, student_data):
@@ -52,8 +52,19 @@ class AddStudentWindow(tk.Toplevel):
         super().__init__(master)
         self.title('Add Student')
 
-        # Set the fixed size of the window
-        self.geometry('450x650')
+        # Set the size of the window
+        self.width = 450
+        self.height = 650
+
+        # Calculate the position to center the window
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+        x = (screen_width - self.width) // 2
+        y = (screen_height - self.height) // 2
+
+        # Set the geometry of the window
+        self.geometry(f'{self.width}x{self.height}+{x}+{y}')
+
         self.add_student_callback = add_student_callback
         self.create_widgets()
 

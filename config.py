@@ -6,7 +6,7 @@ current_user_id = -1
 db_config = {
     'host': 'localhost',
     'user': 'root',
-    'password': 'Mf19*twdc',
+    'password': '',
     'database': 'project'
 }
 
