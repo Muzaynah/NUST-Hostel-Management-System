@@ -1,5 +1,8 @@
 import tkinter as tk
 from tkinter import Label, Button, PhotoImage, Listbox, Scrollbar, messagebox
+import mysql.connector
+from config import db_config
+import config
 
 #1f2b38 dark
 #E0E6EE bg light

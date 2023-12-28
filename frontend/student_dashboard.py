@@ -19,6 +19,8 @@ class StudentDashboard(tk.Frame):
         self.connection = mysql.connector.connect(**db_config)
         self.cursor = self.connection.cursor()
         self.view_name = str(config.current_user_id[0]) + '_student'
+
+        
         
         self.create_student_view()
         self.create_widgets()
