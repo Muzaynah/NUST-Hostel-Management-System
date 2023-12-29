@@ -56,7 +56,9 @@ class StudentAttendance(tk.Frame):
         # Treeview to display attendance records------------------------------------------------------------
 
         #gets the current users attendance logs
+        print('line 59 student_attendance')
         query = f"SELECT DISTINCT ADate, Attendance FROM {self.view_name}"
+
         self.cursor.execute(query)
         results = self.cursor.fetchall()
         

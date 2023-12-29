@@ -18,6 +18,8 @@ class AdminDashboard(tk.Frame):
         self.show_mattendance = show_mattendance
         self.show_mstudent = show_mstudent
         self.show_mnotification = show_mnotification
+        self.connection = mysql.connector.connect(**db_config)
+        self.cursor = self.connection.cursor()
 
         self.create_widgets()
 
@@ -45,18 +47,28 @@ class AdminDashboard(tk.Frame):
         profile_label.pack(side=tk.LEFT, padx=50, pady=50)
 
         # get the actual admin's data from db
-        admin_name = "Samina Baji"
-        admin_id = '1234'
-        Hostel = 'Amna Hostel'
-        Role = 'Caretaker'
+        query = f"SELECT CONCAT(mFirstName, ' ',mLastName) FROM Manager WHERE MID = '{config.current_user_id[0]}'"
+        self.cursor.execute(query)
+        admin_name = self.cursor.fetchone()
+        
+        admin_id = config.current_user_id
+
+        query = f"SELECT hName FROM Hostel, Manager WHERE Manager.HID = Hostel.HID and MID = '{config.current_user_id[0]}'"
+        self.cursor.execute(query)
+        Hostel = self.cursor.fetchone()
+    
+       #  admin_name = "Samina Baji"
+       #  admin_id = '1234'
+       #  Hostel = 'Amna Hostel'
+       #  Role = 'Caretaker'
 
         # label for the admin's name and id
-        admin_name_label = Label(top_panel, text=f"{admin_name}\n{admin_id}",
+        admin_name_label = Label(top_panel, text=f"Name: {admin_name[0]}\nID: {admin_id[0]}",
                                    font=('Microsoft YaHei UI Light', 20, 'bold'), bg='#014a81', fg='white', anchor=tk.W, justify=tk.LEFT)
         admin_name_label.pack(side=tk.LEFT, padx=100, pady=10)
 
         # label for more of the admin's information
-        admin_info_label = Label(top_panel, text=f"{Hostel}\n{Role}",
+        admin_info_label = Label(top_panel, text=f"Hostel Name: {Hostel[0]}\n",
                                    font=('Microsoft YaHei UI Light', 20), bg='#014a81', fg='white', anchor=tk.W, justify=tk.LEFT)
         admin_info_label.pack(side=tk.RIGHT, padx=150, pady=10)
 

@@ -64,31 +64,45 @@ class StudentDashboard(tk.Frame):
             # Hostel = 'Amna Hostel'
             # RoomNumber = '#316'
 
+            #debugging
+            print('debugging')
+            query = f"SELECT * FROM {self.view_name} where cms = {config.current_user_id[0]}"
+            self.cursor.execute(query)
+            print(self.cursor.fetchall())
             # Create a label for the student's name and cms
+
+            #get student id
+            CMS_id = config.current_user_id
+            testQuery = "select current_user()"
+            self.cursor.execute(testQuery)
+            print(self.cursor.fetchall())
+
+            
             #get student name
             query = f"SELECT CONCAT(sFirstName, ' ', sLastName) FROM {self.view_name} WHERE cms = {config.current_user_id[0]}"
             self.cursor.execute(query)
             student_name = self.cursor.fetchone()
-
-            #get student id
-            CMS_id = config.current_user_id
+            self.cursor.nextset()
 
             #get department
-            query = f'SELECT dname FROM {self.view_name} WHERE cms = {config.current_user_id[0]}'
+            query = f"SELECT dname FROM {self.view_name} WHERE cms = {config.current_user_id[0]}"
             self.cursor.execute(query)
             student_department = self.cursor.fetchone()
+            self.cursor.nextset()
 
             #get program
             query = f'SELECT sProgram FROM {self.view_name} WHERE cms = {config.current_user_id[0]}'
             self.cursor.execute(query)
             student_program = self.cursor.fetchone()
 
+            self.cursor.nextset()
             #get hostel
             query = f'SELECT hName FROM {self.view_name} WHERE cms = {config.current_user_id[0]}'
             self.cursor.execute(query)
             student_hostel = self.cursor.fetchone()
 
-            #get hostel
+            self.cursor.nextset()
+            #get room number
             query = f'SELECT sRoomNumber FROM {self.view_name} WHERE cms = {config.current_user_id[0]}'
             self.cursor.execute(query)
             student_room = self.cursor.fetchone()
@@ -223,6 +237,7 @@ class StudentDashboard(tk.Frame):
                 '''
                 
                 self.cursor.execute(query)
+                result=self.cursor.fetchall()
                 self.connection.commit()
             else:
                 print(self.view_name + 'already exists')
