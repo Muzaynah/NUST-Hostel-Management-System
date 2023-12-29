@@ -6,12 +6,13 @@ from frontend.student_dashboard import StudentDashboard
 from frontend.student_outpass import StudentOutpass
 from frontend.student_complaint import StudentComplaint
 from frontend.student_attendance import StudentAttendance
-
 from frontend.admin_attendance import AdminAttendance
 from frontend.admin_student import AdminStudent, AddStudentWindow
-
-# from config import current_user_id
-import config
+from frontend.password_reset import PasswordResetScreen
+from frontend.admin_complaint import AdminComplaint
+from frontend.admin_outpass import AdminOutpass
+from frontend.admin_notification import AdminNotification
+import config  # Import config where it's needed
 
 class MainWindow(tk.Tk):
     def __init__(self):
@@ -24,10 +25,12 @@ class MainWindow(tk.Tk):
         self.iconbitmap('assets/nust_logo.ico')
 
         # Create login page and student/admin pages
-        self.login_page = LoginPage(self, self.show_admin_dashboard, self.show_student_dashboard) #,self.current_user_id
+        #self.login_page = LoginPage(self, self.show_admin_dashboard, self.show_student_dashboard) #,self.current_user_id
         # self.admin_dashboard = AdminDashboard(self, self.show_moutpass, self.show_mcomplaint, self.show_mattendance, self.show_mhostel, self.show_mstudent, self.show_mnotification)
         # self.student_dashboard = StudentDashboard(self, self.show_outpass, self.show_complaints, self.show_attendance)
-        
+        self.login_page = LoginPage(self, self.show_admin_dashboard, self.show_student_dashboard, self.show_password_reset)
+
+
         # student - none ---------------------
         self.student_dashboard = None
         self.student_outpass = None
@@ -40,7 +43,6 @@ class MainWindow(tk.Tk):
         self.admin_attendance = None
         self.admin_complaint = None
         self.admin_student = None
-        self.admin_hostel = None
         self.admin_notification = None
 
         # global current_user_id
@@ -89,9 +91,12 @@ class MainWindow(tk.Tk):
 
     def create_admin_dashboard(self):
         # Create the student dashboard dynamically
-        self.admin_dashboard = AdminDashboard(self, self.show_moutpass, self.show_mcomplaint, self.show_mattendance, self.show_mhostel, self.show_mstudent, self.show_mnotification)
+        self.admin_dashboard = AdminDashboard(self, self.show_moutpass, self.show_mcomplaint, self.show_mattendance, self.show_mstudent, self.show_mnotification)
         self.admin_student = AdminStudent(self, self.show_admin_dashboard)
         self.admin_attendance = AdminAttendance(self)
+        self.admin_complaint = AdminComplaint(self)
+        self.admin_outpass = AdminOutpass(self)
+        self.admin_notification = AdminNotification(self, self.show_add_student)
 
     def show_admin_dashboard(self):
         # Switch to the admin screen
@@ -154,13 +159,21 @@ class MainWindow(tk.Tk):
     def show_login_page(self):
         # Switch to the login page
         if self.admin_dashboard is not None:
-            self.admin_dashboard.grid_forget()  # Remove the admin screen if it's showing
+            self.admin_dashboard.grid_forget()
         if self.student_dashboard is not None:
-            self.student_dashboard.grid_forget()  # Remove the student dashboard if it's showing
-        self.login_page.grid(row=0, column=0, sticky='nsew')  # Show the login page
+            self.student_dashboard.grid_forget()
         
-        # self.student_side_panel.grid_forget()
-        self.student_side_panel.grid(row=0, column=1, sticky='ns') 
+        self.login_page.grid(row=0, column=0, sticky='nsew')  # Show the login page
+        self.student_side_panel.grid_forget()
+        self.admin_side_panel.grid_forget()
+
+    def show_password_reset(self):
+        # Call the PasswordResetScreen with the current user's email and a callback to show the login page
+        email = "user@example.com"  # You need to implement a function to get the current user's email
+        if self.login_page is not None:
+            self.login_page.grid_forget()
+        self.password_reset = PasswordResetScreen(self, email, self.show_login_page)
+        self.password_reset.grid(row=0, column=0, sticky='nsew')
         
     def show_complaints(self):
         # Your code to switch to the complaints section goes here
@@ -201,11 +214,6 @@ class MainWindow(tk.Tk):
 
     
     # admin buttons screens functions ------------------------------
-    
-    def show_mhostel(self):
-        # Your code to switch to the complaints section goes here
-        print("Switching to hostel Section")
-        self.admin_side_panel.grid(row=0, column=1, sticky='ns') 
 
     def show_mstudent(self):
         # Your code to switch to the complaints section goes here
@@ -233,9 +241,16 @@ class MainWindow(tk.Tk):
         self.admin_student.update_student_table([list(student_data.values())])
 
     def show_mnotification(self):
-        # Your code to switch to the complaints section goes here
-        print("Switching to notification Section")
-        self.admin_side_panel.grid(row=0, column=1, sticky='ns') 
+        # Your code to switch to the attendance section goes here
+        print("Switching to admin notification Section")
+        self.admin_side_panel.grid(row=0, column=1, sticky='ns')
+        if(self.admin_dashboard is not None):
+            self.admin_dashboard.grid_forget()
+        if(self.admin_outpass is not None):
+            self.admin_outpass.grid_forget()
+        if(self.student_complaint is not None):
+            self.admin_complaint.grid_forget()
+        self.admin_notification.grid(row=0, column=0, sticky='nsew')
 
     def show_mcomplaint(self):
         # Your code to switch to the complaints section goes here
@@ -247,7 +262,7 @@ class MainWindow(tk.Tk):
             self.admin_outpass.grid_forget()
         if(self.student_attendance is not None):
             self.admin_attendance.grid_forget()
-        self.admin_complaint.grid(row=0, column=0, sticky='nsew')  # Show the outpass screen
+        self.admin_complaint.grid(row=0, column=0, sticky='nsew') 
 
     def show_mattendance(self):
         # Your code to switch to the attendance section goes here
@@ -272,6 +287,7 @@ class MainWindow(tk.Tk):
         if(self.admin_attendance is not None):
             self.admin_attendance.grid_forget()
         self.admin_outpass.grid(row=0, column=0, sticky='nsew')  # Show the outpass screen
+
 
 if __name__ == "__main__":
     app = MainWindow()

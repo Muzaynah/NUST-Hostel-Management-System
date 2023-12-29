@@ -1,8 +1,6 @@
 import tkinter as tk
-from tkinter import Entry, Label, Button
-from PIL import Image, ImageTk
+from tkinter import Entry, Label, Button, messagebox
 from backend.authentication import authenticate_user
-import mysql.connector
 # from config import current_user_id
 import config
 
@@ -13,14 +11,16 @@ import config
 
 class LoginPage(tk.Frame):
     #,current_user_id
-    def __init__(self, master, show_admin_dashboard, show_student_dashboard):
+    def __init__(self, master, show_admin_dashboard, show_student_dashboard, show_password_reset):
         super().__init__(master)
         self.master = master
         self.show_admin_dashboard = show_admin_dashboard
         self.show_student_dashboard = show_student_dashboard
+        self.show_password_reset = show_password_reset
         self.create_widgets()
 
     def create_widgets(self):
+
         # Login frame
         login_frame = tk.Frame(self, width=360, height=360, bg='#1a2530')  # Use the same dark blue color
         login_frame.pack(side="top", pady=160)
@@ -70,6 +70,10 @@ class LoginPage(tk.Frame):
 
         Button(login_frame, width=26, pady=6, text='Sign In', bg='#014a81', fg='white',font=('Microsoft YaHei UI Light', 14), border=0, command=self.sign_in).pack(padx=30, pady=(130,30))
         #Button(login_frame, width=26, pady=6, text='Sign In', bg='#014a81', fg='white',font=('Microsoft YaHei UI Light', 14), border=0, command=self.sign_in).pack(padx=30, pady=(10,5))
+        
+        Button(login_frame, width=26, pady=6, text='Forgot Password', bg='#014a81', fg='white',font=('Microsoft YaHei UI Light', 14), border=0, command=self.show_password_reset).pack(padx=30, pady=(20,30))
+
+
 
     def sign_in(self):
         # global current_user_id
@@ -89,6 +93,7 @@ class LoginPage(tk.Frame):
             self.show_student_dashboard()
         elif user_type == 'invalid':
             print('invalid sign in')
+
 
 if __name__ == "__main__":
     root = tk.Tk()

@@ -10,13 +10,12 @@ import config
 #2270ab lighter nust blue
 
 class AdminDashboard(tk.Frame):
-    def __init__(self, master, show_moutpass, show_mcomplaint, show_mattendance, show_mhostel, show_mstudent, show_mnotification):
+    def __init__(self, master, show_moutpass, show_mcomplaint, show_mattendance, show_mstudent, show_mnotification):
         super().__init__(master, bg='white')  # Set background color to white
         self.master = master
         self.show_moutpass = show_moutpass
         self.show_mcomplaint = show_mcomplaint
         self.show_mattendance = show_mattendance
-        self.show_mhostel = show_mhostel
         self.show_mstudent = show_mstudent
         self.show_mnotification = show_mnotification
 
@@ -82,7 +81,5 @@ class AdminDashboard(tk.Frame):
                font=('Microsoft YaHei UI Light', 18)).pack(pady=(0, 10))
         Button(main_panel, text='Manage Students', pady = 10, command=self.show_mstudent, bg=button_bg_color, fg='#3a80b5', border=0, width=25, height=1,
                font=('Microsoft YaHei UI Light', 18)).pack(pady=(0, 10))
-        Button(main_panel, text='Manage Hostel', pady = 10, command=self.show_mhostel, bg=button_bg_color, fg='#3a80b5', border=0, width=25, height=1,
-               font=('Microsoft YaHei UI Light', 18)).pack(pady=(0, 10)) 
         Button(main_panel, text='Manage Notifications', pady = 10, command=self.show_mnotification, bg=button_bg_color, fg='#3a80b5', border=0, width=25, height=1,
                font=('Microsoft YaHei UI Light', 18)).pack(pady=(0, 10))

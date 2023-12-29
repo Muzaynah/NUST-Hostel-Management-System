@@ -26,3 +26,8 @@ def authenticate_user(username, password):
         return ('manager',manager_id)
     return ('invalid',None)
     # return (username == 'admin' or username == 'student') and password == '1234'
+
+def reset_password(user_id, new_password):
+    # Placeholder function for resetting the user's password (replace with actual logic)
+    # For now, print the user_id and new_password
+    print(f"Resetting password for user {user_id} to {new_password}")
