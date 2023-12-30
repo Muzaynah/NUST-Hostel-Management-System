@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import Label, Button, PhotoImage, Listbox, Scrollbar, messagebox
 import mysql.connector
-from config import db_config
+from config import db_config,db_config_student
 import config
 
 # 1f2b38 dark
@@ -16,13 +16,11 @@ class StudentDashboard(tk.Frame):
         self.show_outpass = show_outpass
         self.show_complaints = show_complaints
         self.show_attendance = show_attendance
-        self.connection = mysql.connector.connect(**db_config)
+        self.connection = mysql.connector.connect(**db_config_student)
         self.cursor = self.connection.cursor()
         self.view_name = str(config.current_user_id[0]) + '_student'
 
-        
-        
-        self.create_student_view()
+        # self.create_student_view()
         self.create_widgets()
 
     def show_notification_detail(self, event):
@@ -65,54 +63,60 @@ class StudentDashboard(tk.Frame):
             # RoomNumber = '#316'
 
             #debugging
-            print('debugging')
-            query = f"SELECT * FROM {self.view_name} where cms = {config.current_user_id[0]}"
-            self.cursor.execute(query)
-            print(self.cursor.fetchall())
+            # print('debugging')
+            # # query = f"SELECT * FROM {self.view_name} where cms = {config.current_user_id[0]}"
+            # self.cursor.execute(query)
+            # print(self.cursor.fetchall())
+
             # Create a label for the student's name and cms
 
             #get student id
             CMS_id = config.current_user_id
-            testQuery = "select current_user()"
-            self.cursor.execute(testQuery)
-            print(self.cursor.fetchall())
+            # testQuery = "select current_user()"
+            # self.cursor.execute(testQuery)
+            # print(self.cursor.fetchall())
+            out_params = [None] * 18  # Assuming 18 OUT parameters based on your stored procedure
+            # Call the stored procedure
+            result=self.cursor.callproc('get_all_student_data', [429551] + out_params)
+            print(result)
+            # Retrieve the values from the out_params list
+            id,firstName, lastName, age, email, phoneNumber, city, street, house_no, full_address, roomNumber, batch, username, password, program, hostel_id, department_id, hostel_name, department_name = result
 
-            
             #get student name
-            query = f"SELECT CONCAT(sFirstName, ' ', sLastName) FROM {self.view_name} WHERE cms = {config.current_user_id[0]}"
-            self.cursor.execute(query)
-            student_name = self.cursor.fetchone()
-            self.cursor.nextset()
+            # query = f"SELECT CONCAT(sFirstName, ' ', sLastName) FROM {self.view_name} WHERE cms = {config.current_user_id[0]}"
+            # self.cursor.execute(query)
+            # student_name = self.cursor.fetchone()
+            # self.cursor.nextset()
 
             #get department
-            query = f"SELECT dname FROM {self.view_name} WHERE cms = {config.current_user_id[0]}"
-            self.cursor.execute(query)
-            student_department = self.cursor.fetchone()
-            self.cursor.nextset()
+            # query = f"SELECT dname FROM {self.view_name} WHERE cms = {config.current_user_id[0]}"
+            # self.cursor.execute(query)
+            # student_department = self.cursor.fetchone()
+            # self.cursor.nextset()
 
             #get program
-            query = f'SELECT sProgram FROM {self.view_name} WHERE cms = {config.current_user_id[0]}'
-            self.cursor.execute(query)
-            student_program = self.cursor.fetchone()
+            # query = f'SELECT sProgram FROM {self.view_name} WHERE cms = {config.current_user_id[0]}'
+            # self.cursor.execute(query)
+            # student_program = self.cursor.fetchone()
 
-            self.cursor.nextset()
-            #get hostel
-            query = f'SELECT hName FROM {self.view_name} WHERE cms = {config.current_user_id[0]}'
-            self.cursor.execute(query)
-            student_hostel = self.cursor.fetchone()
+            # self.cursor.nextset()
+            # #get hostel
+            # query = f'SELECT hName FROM {self.view_name} WHERE cms = {config.current_user_id[0]}'
+            # self.cursor.execute(query)
+            # student_hostel = self.cursor.fetchone()
 
-            self.cursor.nextset()
-            #get room number
-            query = f'SELECT sRoomNumber FROM {self.view_name} WHERE cms = {config.current_user_id[0]}'
-            self.cursor.execute(query)
-            student_room = self.cursor.fetchone()
+            # self.cursor.nextset()
+            # #get room number
+            # query = f'SELECT sRoomNumber FROM {self.view_name} WHERE cms = {config.current_user_id[0]}'
+            # self.cursor.execute(query)
+            # student_room = self.cursor.fetchone()
 
-            student_name_label = Label(top_panel, text=f"{student_name[0]}\n\n{CMS_id[0]}",
+            student_name_label = Label(top_panel, text=f"{firstName+' '+lastName}\n\n{CMS_id[0]}",
                                     font=('Helvetica', 14), bg='#014a81', fg='white', anchor=tk.W, justify=tk.LEFT)
             student_name_label.pack(side=tk.LEFT, padx=100, pady=10)
 
             # Create a label for more of the student's information
-            student_info_label = Label(top_panel, text=f"{student_department[0]}\t\t\t{student_program[0]}\n\n{student_hostel[0]}\t\t{student_room[0]}",
+            student_info_label = Label(top_panel, text=f"{department_name}\t\t\t{program}\n\n{hostel_name}\t\t{roomNumber}",
                                     font=('Helvetica', 14), bg='#014a81', fg='white', anchor=tk.E, justify=tk.LEFT)
             student_info_label.pack(side=tk.RIGHT, padx=100, pady=10)
 
@@ -174,73 +178,73 @@ class StudentDashboard(tk.Frame):
             # Bind a callback to handle notification selection
             notification_listbox.bind('<<ListboxSelect>>', self.show_notification_detail)
     
-    def create_student_view(self):
+    # def create_student_view(self):
 
-        if(config.current_user_id != -1):
-            #first check if the view for the student logged in
-            #if it exists then do nothing
-            #if it doesnt exist then create it
+    #     if(config.current_user_id != -1):
+    #         #first check if the view for the student logged in
+    #         #if it exists then do nothing
+    #         #if it doesnt exist then create it
 
-            query = f"SELECT table_name from information_schema.views where table_name = '{self.view_name}';" #{config.current_user_id[0]}_student_view
-            self.cursor.execute(query)
-            result = self.cursor.fetchall()
-            print(result)
-            if len(result)==0:
-                print('creating view '+ self.view_name)
-                # self.view_name=config.current_user_id[0] + '_student_view'
-                query = f'''
-                        CREATE VIEW {self.view_name} AS 
-                        SELECT 
-                            s.cms,
-                            s.sFirstName,
-                            s.sLastName,
-                            s.sAge,
-                            s.sEmail,
-                            s.sPhoneNumber,
-                            s.city,
-                            s.street,
-                            s.house_no,
-                            s.full_address,
-                            s.sRoomNumber,
-                            s.sBatch,
-                            s.sUsername,
-                            s.sPassword,
-                            s.sProgram,
-                            h.hID,
-                            h.hName,
-                            h.numberOfRooms,
-                            h.numberOfStudents,
-                            g.gName,
-                            g.gPhoneNumber,
-                            g.gEmail,
-                            d.dID,
-                            d.dname,
-                            o.OID,
-                            o.LeavingDate,
-                            o.JoiningDate,
-                            o.Purpose,
-                            o.OStatus,
-                            c.CID,
-                            c.CDescription,
-                            c.CStatus,
-                            c.CDate,
-                            a.ADate,
-                            a.Attendance
-                        FROM Student AS s
-                        LEFT JOIN Hostel AS h ON s.HID = h.HID
-                        LEFT JOIN Guardian AS g ON s.cms = g.cms
-                        LEFT JOIN Department AS d ON s.dID = d.dID
-                        LEFT JOIN Outpass AS o ON s.cms = o.cms
-                        LEFT JOIN Complaint AS c ON s.cms = c.cms
-                        LEFT JOIN AttendanceEvent AS a ON s.cms = a.cms
-                        WHERE s.cms = {config.current_user_id[0]};
-                '''
+    #         query = f"SELECT table_name from information_schema.views where table_name = '{self.view_name}';" #{config.current_user_id[0]}_student_view
+    #         self.cursor.execute(query)
+    #         result = self.cursor.fetchall()
+    #         print(result)
+    #         if len(result)==0:
+    #             print('creating view '+ self.view_name)
+    #             # self.view_name=config.current_user_id[0] + '_student_view'
+    #             query = f'''
+    #                     CREATE VIEW {self.view_name} AS 
+    #                     SELECT 
+    #                         s.cms,
+    #                         s.sFirstName,
+    #                         s.sLastName,
+    #                         s.sAge,
+    #                         s.sEmail,
+    #                         s.sPhoneNumber,
+    #                         s.city,
+    #                         s.street,
+    #                         s.house_no,
+    #                         s.full_address,
+    #                         s.sRoomNumber,
+    #                         s.sBatch,
+    #                         s.sUsername,
+    #                         s.sPassword,
+    #                         s.sProgram,
+    #                         h.hID,
+    #                         h.hName,
+    #                         h.numberOfRooms,
+    #                         h.numberOfStudents,
+    #                         g.gName,
+    #                         g.gPhoneNumber,
+    #                         g.gEmail,
+    #                         d.dID,
+    #                         d.dname,
+    #                         o.OID,
+    #                         o.LeavingDate,
+    #                         o.JoiningDate,
+    #                         o.Purpose,
+    #                         o.OStatus,
+    #                         c.CID,
+    #                         c.CDescription,
+    #                         c.CStatus,
+    #                         c.CDate,
+    #                         a.ADate,
+    #                         a.Attendance
+    #                     FROM Student AS s
+    #                     LEFT JOIN Hostel AS h ON s.HID = h.HID
+    #                     LEFT JOIN Guardian AS g ON s.cms = g.cms
+    #                     LEFT JOIN Department AS d ON s.dID = d.dID
+    #                     LEFT JOIN Outpass AS o ON s.cms = o.cms
+    #                     LEFT JOIN Complaint AS c ON s.cms = c.cms
+    #                     LEFT JOIN AttendanceEvent AS a ON s.cms = a.cms
+    #                     WHERE s.cms = {config.current_user_id[0]};
+    #             '''
                 
-                self.cursor.execute(query)
-                result=self.cursor.fetchall()
-                self.connection.commit()
-            else:
-                print(self.view_name + 'already exists')
+    #             self.cursor.execute(query)
+    #             result=self.cursor.fetchall()
+    #             self.connection.commit()
+    #         else:
+    #             print(self.view_name + 'already exists')
 
 # Main application
 if __name__ == "__main__":

@@ -73,6 +73,7 @@ CREATE TABLE IF NOT EXISTS Manager(
     mLastName CHAR(50) NOT NULL,
     mUsername VARCHAR(50),
     mPassword VARCHAR(50),
+    mEmail VARCHAR(50) CHECK (mEmail LIKE '%@%'),
     HID INT,
     CONSTRAINT managerpk PRIMARY KEY(MID)
 );
@@ -80,9 +81,10 @@ CREATE TABLE IF NOT EXISTS Manager(
 
 CREATE TABLE IF NOT EXISTS AttendanceEvent(
 	ADate DATE NOT NULL,
-    Attendance BOOLEAN NOT NULL,
+    Attendance CHAR(20) NOT NULL,
     cms INT NOT NULL,
-    CONSTRAINT attendanceeventpk PRIMARY KEY(ADate, cms)
+    CONSTRAINT attendanceeventpk PRIMARY KEY(ADate, cms),
+    CONSTRAINT attendance_constraint CHECK(Attendance IN ("Present","Absent","Leave"))
 );
 
 CREATE TABLE IF NOT EXISTS Notifications(

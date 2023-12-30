@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import Button, Entry, Label, Listbox, Scrollbar, StringVar, OptionMenu, messagebox,ttk
 from datetime import datetime
 import mysql.connector
-from config import db_config
+from config import db_config_student
 import config
 
 class StudentAttendance(tk.Frame):
@@ -10,9 +10,9 @@ class StudentAttendance(tk.Frame):
         super().__init__(master)
         self.master = master
         self.show_dashboard = show_dashboard
-        self.connection = mysql.connector.connect(**db_config)
+        self.connection = mysql.connector.connect(**db_config_student)
         self.cursor = self.connection.cursor()
-        self.view_name = str(config.current_user_id[0]) + '_student'
+        # self.view_name = str(config.current_user_id[0]) + '_student'
         self.attendance_tree = ttk.Treeview(self, columns=('Date', 'Status'), show='headings', height=15)
         if(config.current_user_id != -1):
             self.create_widgets()
@@ -57,8 +57,7 @@ class StudentAttendance(tk.Frame):
 
         #gets the current users attendance logs
         print('line 59 student_attendance')
-        query = f"SELECT DISTINCT ADate, Attendance FROM {self.view_name}"
-
+        query = f"call get_attendance_data({config.current_user_id[0]})"
         self.cursor.execute(query)
         results = self.cursor.fetchall()
         
@@ -114,7 +113,7 @@ class StudentAttendance(tk.Frame):
         # Reset the treeview to show all data (replace with actual data retrieval)
         # all_data = [("2023-01-01", "Present"), ("2023-01-02", "Absent"), ("2023-01-03", "Present")]
 
-        query = f"SELECT DISTINCT ADate,Attendance FROM {self.view_name}"
+        query = f"call get_attendance_data({config.current_user_id[0]})"
         self.cursor.execute(query)
         results = self.cursor.fetchall()
 
@@ -131,19 +130,19 @@ class StudentAttendance(tk.Frame):
         # Replace this with actual database queries based on the selected filters
         # For simplicity, returning dummy data
         if(selected_date == 'All' and selected_status == "All"):
-            query = f"SELECT DISTINCT ADate,Attendance FROM {self.view_name}"
+            query = f"call get_attendance_data({config.current_user_id[0]})"
             self.cursor.execute(query)
             results = self.cursor.fetchall()
         elif(selected_status == 'All'):
-            query = f"SELECT ADate,Attendance FROM {self.view_name} where ADate = {selected_date}"
+            query = f"call get_attendance_data_through_date({config.current_user_id},{selected_date});"
             self.cursor.execute(query)
             results = self.cursor.fetchall()
         elif(selected_date == 'All'):
-            query = f"SELECT ADate,Attendance FROM {self.view_name} where attendance = {selected_status}"
+            query = f"call get_attendance_data_through_attendance({config.current_user_id},{selected_status});"
             self.cursor.execute(query)
             results = self.cursor.fetchall()
         else:
-            query = f"SELECT ADate,Attendance FROM {self.view_name} where ADate = {selected_date} and attendance = {selected_status}"
+            query = f"call get_attendance_data_through_attendance_date({config.current_user_id},{selected_status},{selected_date})"
             self.cursor.execute(query)
             results = self.cursor.fetchall()
         return results

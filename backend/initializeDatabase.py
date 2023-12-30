@@ -1,7 +1,7 @@
 
 import mysql.connector
 # from mysql import Error
-from config import db_config, sql_script_path, manager_username_trigger_path, student_username_trigger_path,student_fulladdress_trigger_path
+from config import db_config, sql_script_path, manager_username_trigger_path, student_username_trigger_path,student_fulladdress_trigger_path,procedures_path,grant_student_path
 
 def initialize_database():
 
@@ -28,7 +28,7 @@ def initialize_database():
         connection = mysql.connector.connect(**db_config)
         cursor = connection.cursor()
     
-        #procedure for running a whole script file------------------------------
+        #initializing all tables-----------------------------------------
 
         with open(sql_script_path,'r') as sql_file:
             sql_script = sql_file.read()
@@ -53,8 +53,25 @@ def initialize_database():
         with open(student_fulladdress_trigger_path,'r') as sql_file:
             sql_script = sql_file.read()
         cursor.execute(sql_script)
+        connection.commit() 
+        cursor.nextset()
     
+        #running all procedures stored in one file------------------------------
+        with open(procedures_path,'r') as sql_file:
+            sql_script = sql_file.read()
         
+        #splitting the statements in the file 
+        sql_statements = sql_script.split('--')
+        print(sql_statements)
+        for statement in sql_statements:
+            if statement.strip():  #to insure no blank statements execute
+                cursor.execute(statement)
+                # connection.commit()
+        # cursor.execute(sql_script)
+        connection.commit()
+        cursor.nextset()
+
+
 
         #initializing department and hostel
         query = '''
@@ -88,9 +105,9 @@ def initialize_database():
 
         #initializing some managers
         query = '''
-                    insert into manager(mid,mFirstname, mLastName,mPassword,HID) values
-	                    (1,'Samina','Baji','seecs@123',4),
-                        (2,'Aqsa','Qazi','seecs@123',1)
+                    insert into manager(mid,mFirstname, mLastName,mPassword,mEmail,HID) values
+	                    (1,'Samina','Baji','seecs@123','maheenahmed2004@outlook.com',4),
+                        (2,'Aqsa','Qazi','seecs@123','maheenahmed2004@outlook.com',1)
                     ;
                 '''
         cursor.execute(query)
@@ -104,21 +121,39 @@ def initialize_database():
         query = "create USER IF NOT EXISTS 'manager'@'localhost' IDENTIFIED BY 'seecs@123'"
         cursor.execute(query)
         connection.commit()
+        cursor.nextset()
 
-        query="grant insert on complaint to 'student'@'localhost';"
-        cursor.execute(query)
-        connection.commit()
 
-        query = "grant insert on outpass to 'student'@'localhost';"
-        cursor.execute(query)
-        connection.commit()
+        #granting users priviliges --------------------------------------------------------------------
+        with open(grant_student_path,'r') as sql_file:
+            sql_script = sql_file.read()
+        cursor.execute(sql_script)
+        # connection.commit()
+        # cursor.nextset()
+        #splitting the statements in the file 
+        # sql_statements = sql_script.split(';')
+        # print(sql_statements)
+        # for statement in sql_statements:
+        #     if statement.strip():  #to insure no blank statements execute
+        #         print(statement)
+        #         cursor.execute(statement)
+        #         connection.commit()
+        # connection.commit()
 
         #RUN THESE ONCE !!!
         #adding in default students and admin:
-        query = "INSERT INTO Student(cms,sFirstName,sLastName,sAge,sEmail,sPhoneNumber,city,street,house_no,sRoomNumber,sBatch,sPassword,did,hid) VALUES (429551,'Maheen','Ahmed',19,'maheenahmed@gmail.com',03049991681,'Karachi','abc','xyz',316,2022,'seecs@123',1,1)"
+        
+        #reinitializing the cursor
+        cursor.close()
+        connection.close()
+
+        connection=mysql.connector.connect(**db_config)
+        cursor=connection.cursor()
+
+        query = "INSERT INTO Student(cms,sFirstName,sLastName,sAge,sEmail,sPhoneNumber,city,street,house_no,sRoomNumber,sBatch,sPassword,did,hid) VALUES (429551,'Maheen','Ahmed',19,'maheenahmed2004@outlook.com',03049991681,'Karachi','abc','xyz',316,2022,'seecs@123',1,1)"
         cursor.execute(query)
         connection.commit()
-        query = "INSERT INTO Manager(MID,mFirstName,mLastName,mPassword) VALUES (1234,'John','Doe','seecs@123')"
+        query = "INSERT INTO Manager(MID,mFirstName,mLastName,mPassword,mEmail,HID) VALUES (1234,'John','Doe','seecs@123','maheenahmed2004@outlook.com',3)"
         cursor.execute(query)
         connection.commit()
         query = "INSERT INTO Student(cms,sFirstName,sLastName,sAge,sEmail,sPhoneNumber,city,street,house_no,sRoomNumber,sBatch,sPassword,did,hid) VALUES (423482,'Muzaynah','Farrukh',19,'muzaynahfarrukh@gmail.com',123,'Karachi','abc','xyz',316,2022,'seecs@123',1,4)"
@@ -130,10 +165,10 @@ def initialize_database():
         connection.commit()
 
         query = '''INSERT INTO attendanceevent values
-	('2004-10-12',True,429551),
-    ('2004-10-13',False,429551),
-    ('2004-10-12',True,404520),
-    ('2004-10-12',False,423482);'''
+	('2004-10-12',"Present",429551),
+    ('2004-10-13',"Absent",429551),
+    ('2004-10-12',"Present",404520),
+    ('2004-10-12',"Absent",423482);'''
         cursor.execute(query)
         connection.commit()
         

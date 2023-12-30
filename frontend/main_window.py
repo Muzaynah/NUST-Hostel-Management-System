@@ -29,7 +29,7 @@ class MainWindow(tk.Tk):
         # self.admin_dashboard = AdminDashboard(self, self.show_moutpass, self.show_mcomplaint, self.show_mattendance, self.show_mhostel, self.show_mstudent, self.show_mnotification)
         # self.student_dashboard = StudentDashboard(self, self.show_outpass, self.show_complaints, self.show_attendance)
         self.login_page = LoginPage(self, self.show_admin_dashboard, self.show_student_dashboard, self.show_password_reset)
-
+        self.password_reset=None
 
         # student - none ---------------------
         self.student_dashboard = None
@@ -109,7 +109,8 @@ class MainWindow(tk.Tk):
             self.student_attendance.grid_forget()  # Remove the student attendance if it's showing
         if self.student_complaint is not None:
             self.student_complaint.grid_forget()  # Remove the student complaint if it's showing
-
+        if self.password_reset is not None:
+            self.password_reset.grid_forget()
         if self.admin_dashboard is None:
             print('creating admin dashboard')
             self.create_admin_dashboard()
@@ -131,6 +132,8 @@ class MainWindow(tk.Tk):
             self.student_attendance.grid_forget()
         if(self.student_complaint is not None):
             self.student_complaint.grid_forget()
+        if self.password_reset is not None:
+            self.password_reset.grid_forget() 
 
         if self.student_dashboard is None:
             print('creating student dashboard')
@@ -162,7 +165,9 @@ class MainWindow(tk.Tk):
             self.admin_dashboard.grid_forget()
         if self.student_dashboard is not None:
             self.student_dashboard.grid_forget()
-        
+        if self.password_reset is not None:
+            self.password_reset.grid_forget()
+            
         self.login_page.grid(row=0, column=0, sticky='nsew')  # Show the login page
         self.student_side_panel.grid_forget()
         self.admin_side_panel.grid_forget()
@@ -184,6 +189,8 @@ class MainWindow(tk.Tk):
             self.student_outpass.grid_forget()
         if(self.student_attendance is not None):
             self.student_attendance.grid_forget()
+        if self.password_reset is not None:
+            self.password_reset.grid_forget()
         self.student_complaint.grid(row=0, column=0, sticky='nsew')  
         self.student_side_panel.grid(row=0, column=1, sticky='ns')  # Show the side panel
 
@@ -196,6 +203,8 @@ class MainWindow(tk.Tk):
             self.student_complaint.grid_forget()
         if(self.student_outpass is not None):
             self.student_outpass.grid_forget()
+        if self.password_reset is not None:
+            self.password_reset.grid_forget()
         
         self.student_attendance.grid(row=0, column=0, sticky='nsew')
         self.student_side_panel.grid(row=0, column=1, sticky='ns')  # Show the side panel
@@ -209,6 +218,8 @@ class MainWindow(tk.Tk):
             self.student_complaint.grid_forget()
         if(self.student_attendance is not None):
             self.student_attendance.grid_forget()
+        if self.password_reset is not None:
+            self.password_reset.grid_forget()
         self.student_outpass.grid(row=0, column=0, sticky='nsew')  # Show the student outpass screen
         self.student_side_panel.grid(row=0, column=1, sticky='ns')  # Show the side panel
 
@@ -224,7 +235,9 @@ class MainWindow(tk.Tk):
         if(self.admin_outpass is not None):
             self.admin_outpass.grid_forget()
         if(self.admin_attendance is not None):
-            self.admin_atstendance.grid_forget()
+            self.admin_attendance.grid_forget()
+        if self.password_reset is not None:
+            self.password_reset.grid_forget()
 
         self.admin_student.grid(row=0, column=0, sticky='nsew')  
 
@@ -250,6 +263,8 @@ class MainWindow(tk.Tk):
             self.admin_outpass.grid_forget()
         if(self.student_complaint is not None):
             self.admin_complaint.grid_forget()
+        if self.password_reset is not None:
+            self.password_reset.grid_forget()
         self.admin_notification.grid(row=0, column=0, sticky='nsew')
 
     def show_mcomplaint(self):
@@ -262,6 +277,8 @@ class MainWindow(tk.Tk):
             self.admin_outpass.grid_forget()
         if(self.student_attendance is not None):
             self.admin_attendance.grid_forget()
+        if self.password_reset is not None:
+            self.password_reset.grid_forget()
         self.admin_complaint.grid(row=0, column=0, sticky='nsew') 
 
     def show_mattendance(self):
@@ -274,6 +291,8 @@ class MainWindow(tk.Tk):
             self.admin_outpass.grid_forget()
         if(self.student_complaint is not None):
             self.admin_complaint.grid_forget()
+        if self.password_reset is not None:
+            self.password_reset.grid_forget()
         self.admin_attendance.grid(row=0, column=0, sticky='nsew')
 
     def show_moutpass(self):
@@ -286,6 +305,8 @@ class MainWindow(tk.Tk):
             self.admin_complaint.grid_forget()
         if(self.admin_attendance is not None):
             self.admin_attendance.grid_forget()
+        if self.password_reset is not None:
+            self.password_reset.grid_forget()
         self.admin_outpass.grid(row=0, column=0, sticky='nsew')  # Show the outpass screen
 
 

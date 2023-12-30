@@ -1,18 +1,41 @@
-<<<<<<< Updated upstream
-=======
-# #main.py
-# import tkinter as tk
-# from frontend.main_window import MainWindow
-# from backend.initializeDatabase import initialize_database
+#for testing
 
-# if __name__ == "__main__":
-#     print('here')
-#     initialize_database()
-#     app = MainWindow()
-#     app.mainloop()
-import os
-from config import current_script_path
+from config import procedures_path,db_config,grant_student_path,db_config_student
+import mysql.connector
 
-nhms_folder_path = os.path.dirname(os.path.dirname(current_script_path))
-print(nhms_folder_path)
->>>>>>> Stashed changes
+con = mysql.connector.connect(**db_config_student)
+cursor=con.cursor()
+
+# with open(procedures_path,'r') as sql_file:
+#         sql_script = sql_file.read()
+        
+#         # #splitting the statements in the file 
+#         # sql_statements = sql_script.split('DELIMITER;')
+#         # print(sql_statements)
+# cursor.execute(sql_script)
+
+# with open(grant_student_path,'r') as sql_file:
+#             sql_script = sql_file.read()
+# cursor.execute(sql_script)
+# out_params = [None] * 18 
+# # cursor.callproc('get_all_student_data', [429551] + out_params)
+# firstName, lastName, age, email, phoneNumber, city, street, house_no, full_address, roomNumber, batch, username, password, program, hostel_id, department_id, hostel_name, department_name=None
+# cursor.callproc('get_all_student_data', [429551,firstName, lastName, age, email, phoneNumber, city, street, house_no, full_address, roomNumber, batch, username, password, program, hostel_id, department_id, hostel_name, department_name])
+# # print(out_params)
+# # Retrieve the values from the out_params list
+# # firstName, lastName, age, email, phoneNumber, city, street, house_no, full_address, roomNumber, batch, username, password, program, hostel_id, department_id, hostel_name, department_name = out_params
+
+# print(firstName)
+
+# Assuming 18 OUT parameters based on your stored procedure
+out_params = [None] * 18
+args1=[429551]+out_params
+print(args1)
+# Call the stored procedure
+result=cursor.callproc('get_all_student_data', args=args1)
+print(result)
+# Retrieve the values from the out_params list
+# firstName, lastName, age, email, phoneNumber, city, street, house_no, full_address, roomNumber, batch, username, password, program, hostel_id, department_id, hostel_name, department_name = out_params
+print(args1)
+# Print or use the retrieved values as needed
+# print(firstName)
