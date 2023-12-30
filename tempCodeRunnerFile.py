@@ -1,41 +1,40 @@
 #for testing
 
-from config import procedures_path,db_config,grant_student_path,db_config_student
+from config import procedures_path,db_config,grant_student_path,db_config_student,db_config_manager
 import mysql.connector
 
-con = mysql.connector.connect(**db_config_student)
+con = mysql.connector.connect(**db_config_manager)
 cursor=con.cursor()
 
-# with open(procedures_path,'r') as sql_file:
-#         sql_script = sql_file.read()
-        
-#         # #splitting the statements in the file 
-#         # sql_statements = sql_script.split('DELIMITER;')
-#         # print(sql_statements)
-# cursor.execute(sql_script)
+# # student_data = {label: entry.get() for label, entry in self.entry_fields.items()}
+# print("Switching to student Section\nAdding student:")
+# # print(student_data)
+# # Get department ID from dname
+# departmentname = 'SEECS'
+# cursor.execute(f"SELECT dID FROM Department WHERE dname = '"+departmentname+"';")
+# department_id = cursor.fetchone()  # Fetch the first column value
+# print(department_id[0])
 
-# with open(grant_student_path,'r') as sql_file:
-#             sql_script = sql_file.read()
-# cursor.execute(sql_script)
-# out_params = [None] * 18 
-# # cursor.callproc('get_all_student_data', [429551] + out_params)
-# firstName, lastName, age, email, phoneNumber, city, street, house_no, full_address, roomNumber, batch, username, password, program, hostel_id, department_id, hostel_name, department_name=None
-# cursor.callproc('get_all_student_data', [429551,firstName, lastName, age, email, phoneNumber, city, street, house_no, full_address, roomNumber, batch, username, password, program, hostel_id, department_id, hostel_name, department_name])
-# # print(out_params)
-# # Retrieve the values from the out_params list
-# # firstName, lastName, age, email, phoneNumber, city, street, house_no, full_address, roomNumber, batch, username, password, program, hostel_id, department_id, hostel_name, department_name = out_params
+# # Adding into the student table
+# query = '''
+#         INSERT INTO Student(cms, sFirstName, sLastName, sAge, sEmail, sPhoneNumber, city, street, house_no, sRoomNumber,
+#                         sBatch, sPassword, sProgram, HID, dID) 
+#         VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+# '''
 
-# print(firstName)
+# student_values = (429552, 'Maheen', 'Ahmed', 19, 'maheenahmed2004@outlook.com', 3049991681, 'abu dhabi','street', 1308, 316, 2022, 'seecs@123', None, 1, 1)
+# print(len(student_values))
 
-# Assuming 18 OUT parameters based on your stored procedure
-out_params = [None] * 18
-args1=[429551]+out_params
-print(args1)
-# Call the stored procedure
-result=cursor.callproc('get_all_student_data', args=args1)
+# try:
+#         cursor.execute(query, student_values)
+#         print(cursor.fetchall())
+#         con.commit()
+#         print("Student added successfully!")
+#         # Call the callback function to update the treeview in the AdminStudent class
+
+# except mysql.connector.Error as err:
+#         print(f"Error: {err}")
+
+cursor.execute("select * from student;")
+result=cursor.fetchall()
 print(result)
-# Retrieve the values from the out_params list
-# firstName, lastName, age, email, phoneNumber, city, street, house_no, full_address, roomNumber, batch, username, password, program, hostel_id, department_id, hostel_name, department_name = out_params
-print(args1)
-# Print or use the retrieved values as needed
-# print(firstName)

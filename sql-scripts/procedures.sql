@@ -47,3 +47,12 @@ BEGIN
     WHERE Student.cms = id and Student.HID = Hostel.HID and Student.dID = Department.dID;
 END;
 --
+CREATE PROCEDURE get_all_student_data_through_hostel2(
+    IN current_hostel_id INT
+)
+BEGIN 
+    SELECT Student.cms,sFirstName,sLastName,sAge,sEmail,sPhoneNumber,City,Street,house_no,sRoomNumber,sBatch,Student.dID,Department.dname,sProgram,Student.HID,Hostel.hname
+    FROM Student,Hostel,Department
+    WHERE Student.HID = current_hostel_id and Student.dID = Department.dID and Student.HID=Hostel.HID;
+END;
+--

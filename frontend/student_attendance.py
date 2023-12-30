@@ -72,9 +72,9 @@ class StudentAttendance(tk.Frame):
         self.attendance_tree.pack(padx=10,pady=10)
 
         # sample data
-        attendance_data = [("2023-01-01", "Present"), ("2023-01-02", "Absent"), ("2023-01-03", "Present")]
-        for item in attendance_data:
-            self.attendance_tree.insert('', tk.END, values=item)
+        # attendance_data = [("2023-01-01", "Present"), ("2023-01-02", "Absent"), ("2023-01-03", "Present")]
+        # for item in attendance_data:
+        #     self.attendance_tree.insert('', tk.END, values=item)
 
         #----------------------------------------------------------------------------------------------------
 

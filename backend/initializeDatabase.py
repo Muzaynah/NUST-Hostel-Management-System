@@ -128,19 +128,7 @@ def initialize_database():
         with open(grant_student_path,'r') as sql_file:
             sql_script = sql_file.read()
         cursor.execute(sql_script)
-        # connection.commit()
-        # cursor.nextset()
-        #splitting the statements in the file 
-        # sql_statements = sql_script.split(';')
-        # print(sql_statements)
-        # for statement in sql_statements:
-        #     if statement.strip():  #to insure no blank statements execute
-        #         print(statement)
-        #         cursor.execute(statement)
-        #         connection.commit()
-        # connection.commit()
-
-        #RUN THESE ONCE !!!
+        
         #adding in default students and admin:
         
         #reinitializing the cursor
