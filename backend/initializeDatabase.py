@@ -10,7 +10,7 @@ def initialize_database():
     con1 = mysql.connector.connect(
         host='localhost',
         user='root',
-        password='ISR@m@nsoor0785')
+        password='')
     cur1 = con1.cursor()
     cur1.execute("SHOW DATABASES LIKE 'project'")
     result=cur1.fetchall()
@@ -143,10 +143,10 @@ def initialize_database():
         query = "INSERT INTO Student(cms,sFirstName,sLastName,sAge,sEmail,sPhoneNumber,city,street,house_no,sRoomNumber,sBatch,sPassword,did,hid) VALUES (429551,'Maheen','Ahmed',19,'maheenahmed2004@outlook.com',03049991681,'Karachi','abc','xyz',316,2022,'seecs@123',1,1)"
         cursor.execute(query)
         connection.commit()
-        query = "INSERT INTO Manager(MID,mFirstName,mLastName,mPassword,mEmail,HID) VALUES (1234,'John','Doe','seecs@123','maheenahmed2004@outlook.com',3)"
+        query = "INSERT INTO Manager(MID,mFirstName,mLastName,mPassword,mEmail,HID) VALUES (1234,'John','Doe','seecs@123','muzaynah19@gmail.com',3)"
         cursor.execute(query)
         connection.commit()
-        query = "INSERT INTO Student(cms,sFirstName,sLastName,sAge,sEmail,sPhoneNumber,city,street,house_no,sRoomNumber,sBatch,sPassword,did,hid) VALUES (423482,'Muzaynah','Farrukh',19,'muzaynahfarrukh@gmail.com',123,'Karachi','abc','xyz',316,2022,'seecs@123',1,4)"
+        query = "INSERT INTO Student(cms,sFirstName,sLastName,sAge,sEmail,sPhoneNumber,city,street,house_no,sRoomNumber,sBatch,sPassword,did,hid) VALUES (423482,'Muzaynah','Farrukh',19,'muzaynah19@gmail.com',123,'Karachi','abc','xyz',316,2022,'seecs@123',1,4)"
         cursor.execute(query)
         connection.commit()
 

@@ -6,10 +6,9 @@ from config import db_config_student
 import config
 
 class StudentOutpass(tk.Frame):
-    def __init__(self, master, show_dashboard):
+    def __init__(self, master):
         super().__init__(master)
         self.master = master
-        self.show_dashboard = show_dashboard
         self.create_widgets()
 
     def create_widgets(self):
@@ -87,9 +86,6 @@ class StudentOutpass(tk.Frame):
 
         outpass_listbox.config(yscrollcommand=scrollbar.set)
 
-        # Back to dashboard button
-        Button(self, text='Back to Dashboard', command=self.show_dashboard).pack(pady=20)
-
     def submit_outpass(self):
         # Check if any field is empty
         if not self.purpose_entry.get() or not self.day_var.get() or not self.month_var.get() or not self.year_var.get() or not self.day_var_joining.get() or not self.month_var_joining.get() or not self.year_var_joining.get():
@@ -135,9 +131,3 @@ class StudentOutpass(tk.Frame):
             if connection.is_connected():
                 cursor.close()
                 connection.close()
-
-if __name__ == "__main__":
-    root = tk.Tk()
-    app = StudentOutpass(root, show_dashboard=lambda: print("Back to Dashboard"))
-    app.pack()
-    root.mainloop()

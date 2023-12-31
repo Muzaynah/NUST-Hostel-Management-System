@@ -3,6 +3,12 @@ from tkinter import Entry, Label, Button
 from backend.authentication import authenticate_user,authenticate_username
 import config
 
+#1f2b38 dark
+#E0E6EE bg light
+#014a81 nust blue
+#2270ab lighter nust blue
+
+
 class LoginPage(tk.Frame):
     def __init__(self, master, show_admin_dashboard, show_student_dashboard, show_password_reset):
         super().__init__(master)
@@ -23,7 +29,7 @@ class LoginPage(tk.Frame):
         login_frame.pack(side="top",pady=(160,0))
 
 
-        Label(login_frame, text='Sign In', fg='#3a80b5', bg='#1a2530',
+        Label(login_frame, text='Log In', fg='#3a80b5', bg='#1a2530',
               font=('Microsoft YaHei UI Light', 26, 'bold')).pack(padx=20, pady=(40, 50))
 
         message_frame = tk.Frame(self, width=360, height=50, bg='#F0F0F0')  # Adjusted height
@@ -58,11 +64,13 @@ class LoginPage(tk.Frame):
             pw = self.password.get()
             if pw == 'Password':
                 self.password.delete(0, 'end')
+                self.password.config(show='*')
 
         def on_leave_password(e):
             pw = self.password.get()
             if pw == '':
                 self.password.insert(0, 'Password')
+                self.password.config(show='')
 
         self.password = Entry(login_frame, width=35, fg='white', border=0, bg='#1a2530',  # Use the same dark blue color
                               font=('Microsoft YaHei UI Light', 11))
@@ -74,7 +82,7 @@ class LoginPage(tk.Frame):
         tk.Frame(login_frame, width=295, height=2, bg='white').pack(padx=20)  # Use white color for the separator
 
         # Button(login_frame, width=26, pady=6, text='Sign In', bg='#014a81', fg='white',font=('Microsoft YaHei UI Light', 14), border=0, command=self.sign_in).pack(padx=30, pady=(130,30))
-        Button(login_frame, width=26, pady=6, text='Sign In', bg='#014a81', fg='white',font=('Microsoft YaHei UI Light', 14), border=0, command=self.sign_in).pack(padx=30, pady=(10,5))
+        Button(login_frame, width=26, pady=6, text='Log In', bg='#014a81', fg='white',font=('Microsoft YaHei UI Light', 14), border=0, command=self.sign_in).pack(padx=30, pady=(10,5))
 
         # Button(login_frame, width=26, pady=6, text='Forgot Password', bg='#014a81', fg='white',font=('Microsoft YaHei UI Light', 14), border=0, command=self.show_password_reset).pack(padx=30, pady=(10,30))
         Button(login_frame, width=26, pady=6, text='Forgot Password', bg='#014a81', fg='white',font=('Microsoft YaHei UI Light', 14), border=0, command=self.forgot_password_clicked).pack(padx=30, pady=(10,10))
@@ -91,11 +99,29 @@ class LoginPage(tk.Frame):
             config.current_user_id = id
             print('manager logging in')
             self.show_admin_dashboard()
+
+            self.password.delete(0, 'end')
+            self.password.insert(0, 'Password')
+            self.password.config(show='')
+
+            self.user.delete(0, 'end')
+            self.user.insert(0, 'Username')
+            self.user.config(show='')
+
         elif user_type == 'student':
             id = user_id
             config.current_user_id = id
             print('student logging in')
             self.show_student_dashboard()
+
+            self.password.delete(0, 'end')
+            self.password.insert(0, 'Password')
+            self.password.config(show='')
+
+            self.user.delete(0, 'end')
+            self.user.insert(0, 'Username')
+            self.user.config(show='')
+
         elif user_type == 'invalid':
             self.update_message_label("Invalid Login")
 

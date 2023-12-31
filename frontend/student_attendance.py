@@ -6,17 +6,15 @@ from config import db_config_student
 import config
 
 class StudentAttendance(tk.Frame):
-    def __init__(self, master, show_dashboard):
+    def __init__(self, master):
         super().__init__(master)
         self.master = master
-        self.show_dashboard = show_dashboard
         self.connection = mysql.connector.connect(**db_config_student)
         self.cursor = self.connection.cursor()
         # self.view_name = str(config.current_user_id[0]) + '_student'
         self.attendance_tree = ttk.Treeview(self, columns=('Date', 'Status'), show='headings', height=15)
         if(config.current_user_id != -1):
             self.create_widgets()
-        
 
     def create_widgets(self):
 
@@ -24,13 +22,11 @@ class StudentAttendance(tk.Frame):
         title_label = Label(self, text='Attendance Record', font=('Helvetica', 16))
         title_label.pack(pady=20)
 
-
         left_frame = tk.Frame(self, width=600, height=600, bg='white')
         left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=10, pady=10)
 
         right_frame = tk.Frame(self, width=600, height=600, bg='white')
         right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=10, pady=10)
-
 
         # Filter options
         date_label = Label(right_frame, text='Date:')
@@ -82,10 +78,6 @@ class StudentAttendance(tk.Frame):
         scrollbar = ttk.Scrollbar(left_frame, orient=tk.VERTICAL, command=self.attendance_tree.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         self.attendance_tree.config(yscrollcommand=scrollbar.set)
-
-        # Back to dashboard button
-        back_button = Button(self, text='Back to Dashboard', command=self.show_dashboard)
-        back_button.pack(pady=20)
 
     def apply_filters(self):
 
@@ -146,9 +138,3 @@ class StudentAttendance(tk.Frame):
             self.cursor.execute(query)
             results = self.cursor.fetchall()
         return results
-
-if __name__ == "__main__":
-    root = tk.Tk()
-    app = StudentAttendance(root, show_dashboard=lambda: print("Back to Dashboard"))
-    app.pack()
-    root.mainloop()
