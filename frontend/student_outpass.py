@@ -1,21 +1,9 @@
-# config.py
-# This file contains the database configuration (db_config) dictionary
-# Replace 'your_username', 'your_password', and 'your_database' with your actual MySQL credentials
-
-db_config = {
-    'host': 'localhost',
-    'user': 'root',
-    'password': 'ISR@m@nsoor0785',
-    'database': 'project',
-    'raise_on_warnings': True
-}
-
-# main.py
 import tkinter as tk
 from tkinter import Button, Entry, Label, Listbox, Scrollbar, StringVar, OptionMenu, messagebox
 from datetime import datetime
 import mysql.connector
-from config import db_config
+from config import db_config_student
+import config
 
 class StudentOutpass(tk.Frame):
     def __init__(self, master, show_dashboard):
@@ -39,21 +27,21 @@ class StudentOutpass(tk.Frame):
         # Entry widgets for outpass request form
         purpose_label = Label(left_frame, text='Purpose:')
         purpose_label.pack()
-        purpose_entry = Entry(left_frame)
-        purpose_entry.pack()
+        self.purpose_entry = Entry(left_frame)
+        self.purpose_entry.pack()
 
         # Leaving Date
         leaving_date_label = Label(left_frame, text='Leaving Date:')
         leaving_date_label.pack()
 
         # Drop-down menus for day, month, and year
-        day_var = StringVar()
-        month_var = StringVar()
-        year_var = StringVar()
+        self.day_var = StringVar()
+        self.month_var = StringVar()
+        self.year_var = StringVar()
 
-        day_menu = OptionMenu(left_frame, day_var, *range(1, 32))
-        month_menu = OptionMenu(left_frame, month_var, *range(1, 13))
-        year_menu = OptionMenu(left_frame, year_var, *range(datetime.now().year, datetime.now().year + 1))
+        day_menu = OptionMenu(left_frame, self.day_var, *range(1, 32))
+        month_menu = OptionMenu(left_frame, self.month_var, *range(1, 13))
+        year_menu = OptionMenu(left_frame, self.year_var, *range(datetime.now().year, datetime.now().year + 1))
 
         day_menu.pack()
         month_menu.pack()
@@ -64,24 +52,20 @@ class StudentOutpass(tk.Frame):
         joining_date_label.pack()
 
         # Drop-down menus for day, month, and year
-        day_var_joining = StringVar()
-        month_var_joining = StringVar()
-        year_var_joining = StringVar()
+        self.day_var_joining = StringVar()
+        self.month_var_joining = StringVar()
+        self.year_var_joining = StringVar()
 
-        day_menu_joining = OptionMenu(left_frame, day_var_joining, *range(1, 32))
-        month_menu_joining = OptionMenu(left_frame, month_var_joining, *range(1, 13))
-        year_menu_joining = OptionMenu(left_frame, year_var_joining, *range(datetime.now().year, datetime.now().year + 1))
+        day_menu_joining = OptionMenu(left_frame, self.day_var_joining, *range(1, 32))
+        month_menu_joining = OptionMenu(left_frame, self.month_var_joining, *range(1, 13))
+        year_menu_joining = OptionMenu(left_frame, self.year_var_joining, *range(datetime.now().year, datetime.now().year + 1))
 
         day_menu_joining.pack()
         month_menu_joining.pack()
         year_menu_joining.pack()
 
         # Submit button
-        submit_button = Button(left_frame, text='Submit', command=lambda: self.submit_outpass(
-            purpose_entry.get(),
-            day_var.get(), month_var.get(), year_var.get(),
-            day_var_joining.get(), month_var_joining.get(), year_var_joining.get()
-        ))
+        submit_button = Button(left_frame, text='Submit', command=self.submit_outpass)
         submit_button.pack(pady=10)
 
         # Outpass Log section (Right Frame)
@@ -106,30 +90,42 @@ class StudentOutpass(tk.Frame):
         # Back to dashboard button
         Button(self, text='Back to Dashboard', command=self.show_dashboard).pack(pady=20)
 
-    def submit_outpass(self, purpose, leaving_day, leaving_month, leaving_year, joining_day, joining_month, joining_year):
+    def submit_outpass(self):
         # Check if any field is empty
-        if not purpose or not leaving_day or not leaving_month or not leaving_year or not joining_day or not joining_month or not joining_year:
+        if not self.purpose_entry.get() or not self.day_var.get() or not self.month_var.get() or not self.year_var.get() or not self.day_var_joining.get() or not self.month_var_joining.get() or not self.year_var_joining.get():
             messagebox.showerror("Error", "All fields must be filled.")
             return
 
         try:
             # Connect to the database
-            connection = mysql.connector.connect(**db_config)
+            connection = mysql.connector.connect(**db_config_student)
             cursor = connection.cursor()
 
+            # Get the CMS ID of the current user
+            cms_id = config.current_user_id[0]
+
             # Insert outpass data into the database
-            query = "INSERT INTO Outpass (LeavingDate, JoiningDate, Purpose, OStatus) VALUES (%s, %s, %s, 'Pending')"
+            query = "INSERT INTO Outpass (LeavingDate, JoiningDate, Purpose, OStatus, CMS) VALUES (%s, %s, %s, 'Pending', %s)"
             
             # Format LeavingDate and JoiningDate as datetime objects
-            leaving_date = datetime(int(leaving_year), int(leaving_month), int(leaving_day))
-            joining_date = datetime(int(joining_year), int(joining_month), int(joining_day))
+            leaving_date = datetime(int(self.year_var.get()), int(self.month_var.get()), int(self.day_var.get()))
+            joining_date = datetime(int(self.year_var_joining.get()), int(self.month_var_joining.get()), int(self.day_var_joining.get()))
             
-            values = (leaving_date, joining_date, purpose)
+            values = (leaving_date, joining_date, self.purpose_entry.get(), cms_id)
 
             cursor.execute(query, values)
             connection.commit()
 
             messagebox.showinfo("Success", "Outpass submitted successfully!")
+
+            # Reset form fields
+            self.purpose_entry.delete(0, tk.END)
+            self.day_var.set('')
+            self.month_var.set('')
+            self.year_var.set('')
+            self.day_var_joining.set('')
+            self.month_var_joining.set('')
+            self.year_var_joining.set()
 
         except mysql.connector.Error as err:
             messagebox.showerror("Error", f"Database Error: {err}")

@@ -26,4 +26,15 @@ grant insert on guardian to 'manager'@'localhost';
 
 grant select on department to 'manager'@'localhost';
 
+GRANT SELECT ON complaint TO 'manager'@'localhost';
+
+GRANT UPDATE ON complaint TO 'manager'@'localhost';
+
 grant select on hostel to 'manager'@'localhost';
+
+GRANT SELECT ON outpass TO 'manager'@'localhost';
+
+GRANT UPDATE ON outpass TO 'manager'@'localhost';
+
+GRANT SELECT ON guardian TO 'manager'@'localhost';
+

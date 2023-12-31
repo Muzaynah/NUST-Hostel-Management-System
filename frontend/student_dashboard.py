@@ -77,7 +77,7 @@ class StudentDashboard(tk.Frame):
             # print(self.cursor.fetchall())
             out_params = [None] * 18  # Assuming 18 OUT parameters based on your stored procedure
             # Call the stored procedure
-            result=self.cursor.callproc('get_all_student_data', [429551] + out_params)
+            result=self.cursor.callproc('get_all_student_data', [config.current_user_id[0]] + out_params)
             print(result)
             # Retrieve the values from the out_params list
             id,firstName, lastName, age, email, phoneNumber, city, street, house_no, full_address, roomNumber, batch, username, password, program, hostel_id, department_id, hostel_name, department_name = result

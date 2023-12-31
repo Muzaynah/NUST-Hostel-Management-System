@@ -55,7 +55,7 @@ class AdminStudent(tk.Frame):
 
         print(self.hostel_id)
         query = f"call get_all_student_data_through_hostel2({self.hostel_id[0]});"
-        self.cursor.execute(query)
+        self.cursor.execute(query, multi=True)
         result = self.cursor.fetchall()
         print(result)
 

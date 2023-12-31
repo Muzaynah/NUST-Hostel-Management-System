@@ -10,7 +10,7 @@ def initialize_database():
     con1 = mysql.connector.connect(
         host='localhost',
         user='root',
-        password='seecs@123')
+        password='ISR@m@nsoor0785')
     cur1 = con1.cursor()
     cur1.execute("SHOW DATABASES LIKE 'project'")
     result=cur1.fetchall()
@@ -127,7 +127,9 @@ def initialize_database():
         #granting users priviliges --------------------------------------------------------------------
         with open(grant_student_path,'r') as sql_file:
             sql_script = sql_file.read()
-        cursor.execute(sql_script)
+        cursor.execute(sql_script, multi=True)
+
+        print(sql_script)
         
         #adding in default students and admin:
         
