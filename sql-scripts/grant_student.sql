@@ -10,9 +10,11 @@ grant insert on complaint to 'student'@'localhost';
 
 grant insert on outpass to 'student'@'localhost';
 
+grant execute on procedure get_outpass_data_through_cms to 'student'@'localhost';
 
 
-grant select on student to 'manager'@'localhost';
+
+
 
 grant execute on procedure get_all_student_data_through_hostel2 to 'manager'@'localhost';
 
@@ -30,11 +32,10 @@ GRANT SELECT ON complaint TO 'manager'@'localhost';
 
 GRANT UPDATE ON complaint TO 'manager'@'localhost';
 
-grant select on hostel to 'manager'@'localhost';
-
 GRANT SELECT ON outpass TO 'manager'@'localhost';
 
 GRANT UPDATE ON outpass TO 'manager'@'localhost';
 
-GRANT SELECT ON guardian TO 'manager'@'localhost';
+grant select on hostel to 'manager'@'localhost';
 
+GRANT SELECT ON guardian TO 'manager'@'localhost';

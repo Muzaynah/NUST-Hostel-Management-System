@@ -109,11 +109,17 @@ class MainWindow(tk.Tk):
         if self.admin_dashboard is not None:
             self.admin_dashboard.grid_forget()
         if self.student_outpass is not None:
-            self.student_outpass.grid_forget()
+            self.student_outpass.destroy()
+            self.student_outpass=None
+            # self.student_outpass.grid_forget()
         if self.student_attendance is not None:
-            self.student_attendance.grid_forget()
+            self.student_attendance.destroy()
+            self.student_attendance=None
+            # self.student_attendance.grid_forget()
         if self.student_complaint is not None:
-            self.student_complaint.grid_forget()
+            self.student_complaint.destroy()
+            self.student_complaint=None
+            # self.student_complaint.grid_forget()
         if self.password_reset is not None:
             self.password_reset.grid_forget()
         if self.student_dashboard is None:
@@ -125,29 +131,39 @@ class MainWindow(tk.Tk):
         self.admin_side_panel.grid_forget()
 
     def show_login_page(self):
-        # Switch to the login page
         if self.admin_dashboard is not None:
-            self.admin_dashboard.grid_forget()
+            self.admin_dashboard.destroy()
+            self.admin_dashboard = None
         if self.student_dashboard is not None:
-            self.student_dashboard.grid_forget()
+            self.student_dashboard.destroy()
+            self.student_dashboard = None
         if self.student_outpass is not None:
-            self.student_outpass.grid_forget()
+            self.student_outpass.destroy()
+            self.student_outpass = None
         if self.student_attendance is not None:
-            self.student_attendance.grid_forget()
+            self.student_attendance.destroy()
+            self.student_attendance = None
         if self.student_complaint is not None:
-            self.student_complaint.grid_forget()
+            self.student_complaint.destroy()
+            self.student_complaint = None
         if self.password_reset is not None:
-            self.password_reset.grid_forget()
+            self.password_reset.destroy()
+            self.password_reset = None
         if self.admin_outpass is not None:
-            self.admin_outpass.grid_forget()
+            self.admin_outpass.destroy()
+            self.admin_outpass = None
         if self.admin_attendance is not None:
-            self.admin_attendance.grid_forget()
+            self.admin_attendance.destroy()
+            self.admin_attendance = None
         if self.admin_complaint is not None:
-            self.admin_complaint.grid_forget()
+            self.admin_complaint.destroy()
+            self.admin_complaint = None
         if self.admin_student is not None:
-            self.admin_student.grid_forget()
+            self.admin_student.destroy()
+            self.admin_student = None
         if self.admin_notification is not None:
-            self.admin_notification.grid_forget()
+            self.admin_notification.destroy()
+            self.admin_notification = None
 
         self.student_side_panel.grid_forget()
         self.admin_side_panel.grid_forget()
@@ -197,6 +213,8 @@ class MainWindow(tk.Tk):
 
     def show_complaints(self):
         print("Switching to Complaints Section")
+        if self.student_complaint is None:
+            self.student_complaint = StudentComplaint(self)
         if self.student_dashboard is not None:
             self.student_dashboard.grid_forget()
         if self.student_outpass is not None:
@@ -210,6 +228,8 @@ class MainWindow(tk.Tk):
 
     def show_attendance(self):
         print("Switching to Attendance Section")
+        if self.student_attendance is None:
+            self.student_attendance = StudentAttendance(self)
         if self.student_dashboard is not None:
             self.student_dashboard.grid_forget()
         if self.student_complaint is not None:
@@ -224,6 +244,8 @@ class MainWindow(tk.Tk):
 
     def show_outpass(self):
         print("Switching to Outpass Section")
+        if self.student_outpass is None:
+            self.student_outpass = StudentOutpass(self)
         if self.student_dashboard is not None:
             self.student_dashboard.grid_forget()
         if self.student_complaint is not None:

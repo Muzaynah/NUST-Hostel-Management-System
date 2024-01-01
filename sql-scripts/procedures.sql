@@ -56,3 +56,12 @@ BEGIN
     WHERE Student.HID = current_hostel_id and Student.dID = Department.dID and Student.HID=Hostel.HID;
 END;
 --
+CREATE PROCEDURE get_outpass_data_through_cms(
+    IN current_student_id INT
+)
+BEGIN
+    SELECT OID, Purpose, LeavingDate, JoiningDate,Ostatus
+    FROM Outpass
+    WHERE cms = current_student_id;
+END;
+--

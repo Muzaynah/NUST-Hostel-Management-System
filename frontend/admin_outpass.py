@@ -63,6 +63,7 @@ class AdminOutpass(tk.Frame):
 
     def edit_outpass_details(self, event):
         selected_item = self.outpass_tree.selection()[0]
+        
         edit_window = Toplevel(self)
         edit_window.title('Edit Outpass Details')
 
@@ -84,11 +85,12 @@ class AdminOutpass(tk.Frame):
         status_menu = ttk.Combobox(edit_window, textvariable=status_var, values=['Pending', 'Approved', 'Rejected'])
         status_menu.grid(row=len(labels), column=1, pady=5, padx=5)
 
-        save_button = Button(edit_window, text='Save', command=lambda: self.save_outpass_details(edit_window, selected_item, entry_fields, status_var))
+        save_button = Button(edit_window, text='Save', command=lambda: self.save_outpass_details(edit_window, selected_item,item_values[0], entry_fields, status_var))
         save_button.grid(row=len(labels) + 1, columnspan=2, pady=10)
 
-    def save_outpass_details(self, edit_window, selected_item, entry_fields, status_var):
-        oid = selected_item.split()[0]
+    def save_outpass_details(self, edit_window, selected_item, item_value_oid,entry_fields, status_var):
+        oid = item_value_oid.split()[0]
+        print('oid: ',oid)
         existing_values = list(self.outpass_tree.item(selected_item, 'values'))
         existing_values[4] = status_var.get()
         self.outpass_tree.item(selected_item, values=existing_values)
@@ -97,33 +99,33 @@ class AdminOutpass(tk.Frame):
         edit_window.destroy()
 
     def update_outpass_status_in_db(self, oid, new_status):
-        if new_status != "Pending":
-            print("Status can only be updated to 'Pending'.")
+        if new_status == "Pending":
+            print("Status can only be updated to 'Approved' or 'Rejected'.")
             return
+        # try:
+        connection = mysql.connector.connect(**db_config_manager)
+        cursor = connection.cursor()
 
-        try:
-            connection = mysql.connector.connect(**db_config_manager)
-            cursor = connection.cursor()
+        # oid = int(oid)
 
-            oid = int(oid)
+        # Update the status only if it's currently 'Pending'
+        update_query = "UPDATE Outpass SET OStatus = %s WHERE OID = %s AND OStatus = 'Pending'"
+        cursor.execute(update_query, (new_status, str(int(oid))))
+        print(update_query,new_status,oid)
 
-            # Update the status only if it's currently 'Pending'
-            update_query = "UPDATE Outpass SET OStatus = %s WHERE OID = %s AND OStatus = 'Pending'"
-            cursor.execute(update_query, (new_status, oid))
+        connection.commit()  # Commit the transaction
 
-            connection.commit()  # Commit the transaction
+        if cursor.rowcount > 0:
+            print("Outpass status updated successfully!")
+        else:
+            print(f"No Outpass with matching OID {oid} and Pending status found or the status is already {new_status}.")
 
-            if cursor.rowcount > 0:
-                print("Outpass status updated successfully!")
-            else:
-                print(f"No Outpass with matching OID {oid} and Pending status found or the status is already {new_status}.")
+        # except mysql.connector.Error as e:
+        #     print(f"Error updating outpass status: {e}")
 
-        except mysql.connector.Error as e:
-            print(f"Error updating outpass status: {e}")
-
-        finally:
-            if connection:
-                connection.close()
+        # finally:
+            # if connection:
+            #     connection.close()
 
 if __name__ == "__main__":
     root = tk.Tk()
