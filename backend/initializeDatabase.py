@@ -10,7 +10,7 @@ def initialize_database():
     con1 = mysql.connector.connect(
         host='localhost',
         user='root',
-        password='seecs@123')
+        password='ISR@m@nsoor0785')
     cur1 = con1.cursor()
     cur1.execute("SHOW DATABASES LIKE 'project'")
     result=cur1.fetchall()
@@ -103,16 +103,6 @@ def initialize_database():
         cursor.execute(query)
         connection.commit()
 
-        #initializing some managers
-        query = '''
-                    insert into manager(mid,mFirstname, mLastName,mPassword,mEmail,HID) values
-	                    (1,'Samina','Baji','seecs@123','maheenahmed2004@outlook.com',4),
-                        (2,'Aqsa','Qazi','seecs@123','maheenahmed2004@outlook.com',1)
-                    ;
-                '''
-        cursor.execute(query)
-        connection.commit()
-
 
         #initializing users
         query ="create USER IF NOT EXISTS 'student'@'localhost' IDENTIFIED BY 'seecs@123';"
@@ -151,25 +141,92 @@ def initialize_database():
         connection=mysql.connector.connect(**db_config)
         cursor=connection.cursor()
 
-        query = "INSERT INTO Student(cms,sFirstName,sLastName,sAge,sEmail,sPhoneNumber,city,street,house_no,sRoomNumber,sBatch,sPassword,did,hid) VALUES (429551,'Maheen','Ahmed',19,'maheenahmed2004@outlook.com',03049991681,'Karachi','abc','xyz',316,2022,'seecs@123',1,1)"
-        cursor.execute(query)
-        connection.commit()
-        query = "INSERT INTO Manager(MID,mFirstName,mLastName,mPassword,mEmail,HID) VALUES (1234,'John','Doe','seecs@123','muzaynah19@gmail.com',3)"
-        cursor.execute(query)
-        connection.commit()
-        query = "INSERT INTO Student(cms,sFirstName,sLastName,sAge,sEmail,sPhoneNumber,city,street,house_no,sRoomNumber,sBatch,sPassword,did,hid) VALUES (423482,'Muzaynah','Farrukh',19,'muzaynah19@gmail.com',123,'Karachi','abc','xyz',316,2022,'seecs@123',1,4)"
-        cursor.execute(query)
-        connection.commit()
-
-        query = "INSERT INTO Student(cms,sFirstName,sLastName,sAge,sEmail,sPhoneNumber,city,street,house_no,sRoomNumber,sBatch,sPassword,did,hid) VALUES (404520,'Isra','Mansoor',19,'isramansoor@gmail.com',123,'Islamabad','abc','xyz',428,2022,'seecs@123',1,2)"
+        query = '''
+                    INSERT INTO Student(cms,sFirstName,sLastName,sAge,sEmail,sPhoneNumber,city,street,house_no,sRoomNumber,sBatch,sPassword,did,hid)
+                    VALUES (429551,'Maheen','Ahmed',19,'maheenahmed2004@outlook.com',03049991681,'Karachi','abc','xyz',316,2022,'seecs@123',1,1),
+                    (423482,'Muzaynah','Farrukh',19,'muzaynah19@gmail.com',123,'Karachi','abc','xyz',316,2022,'seecs@123',1,4),
+                    (404520,'Isra','Mansoor',19,'isramansoor@gmail.com',123,'Islamabad','abc','xyz',428,2022,'seecs@123',1,2),
+                    (436789, 'Ayesha', 'Akhtar', 19, 'ayesha.akhtar@gmail.com', 03678901234, 'Karachi', 'Nazimabad', 'LMN Street', 212, 2022, 'seecs@123', 2, 1),
+                    (445678, 'Sara', 'Khan', 20, 'sara.khan@gmail.com', 03789012345, 'Lahore', 'Defence', 'JKL Road', 114, 2022, 'seecs@123', 3, 2);
+                '''
         cursor.execute(query)
         connection.commit()
 
-        query = '''INSERT INTO attendanceevent values
-	('2004-10-12',"Present",429551),
-    ('2004-10-13',"Absent",429551),
-    ('2004-10-12',"Present",404520),
-    ('2004-10-12',"Absent",423482);'''
+        #initializing some managers
+        query = '''
+                    insert into manager(mid,mFirstname, mLastName,mPassword,mEmail,HID) values
+	                    (1236,'Samina','Baji','seecs@123','maheenahmed2004@outlook.com',4),
+                        (6712,'Aqsa','Qazi','seecs@123','maheenahmed2004@outlook.com',1),
+                        (1234, 'John', 'Doe', 'seecs@123', 'muzaynah19@gmail.com', 3),
+                        (4111, 'Bilal', 'Raza', 'seecs@123', 'bilal.raza@email.com', 2),
+                        (5098, 'Sana', 'Ahmed', 'seecs@123', 'sana.ahmed@email.com', 1);
+                    '''
+
+        cursor.execute(query)
+        connection.commit()
+
+
+        query = '''
+                    INSERT INTO Guardian (gName, gPhoneNumber, gEmail, cms)
+                    VALUES 
+                    ('Saima Ahmed',   30049992222, 'saima.ahmed@gmail.com', 429551),
+                    ('Farrukh Zafar', 32112344444, 'farrukh.zafar@gmail.com', 423482),
+                    ('Mansoor Ali',   34512355555, 'mansoor.ali@gmail.com', 404520),
+                    ('Akhtar Khan',   36789011111, 'akhtar.khan@gmail.com', 436789),
+                    ('Kashan Khan',   37890122222, 'kashan.khan@gmail.com', 445678);
+     
+                '''
+        cursor.execute(query)
+        connection.commit()
+       
+
+
+        query = '''
+            INSERT INTO attendanceevent (AEDate, AEStatus, cms)
+            VALUES
+            ('2023-01-01', 'Present', 429551),
+            ('2023-01-01', 'Present', 429551),
+            ('2023-01-02', 'Absent', 423482),
+            ('2023-01-03', 'Present', 404520),
+            ('2023-01-04', 'Absent', 436789);
+        '''
+
+        query = '''
+                    INSERT INTO Complaint (CDescription, CStatus, CDate, cms)
+                    VALUES 
+                    ('Broken chair in my room.', 'Pending', '2023-01-01', 429551),
+                    ('AC not working in common area.', 'Resolved', '2023-01-02', 423482),
+                    ('Wi-Fi connectivity issues.', 'Pending', '2023-01-03', 404520),
+                    ('Leakage in the ceiling.', 'Resolved', '2023-01-04', 436789),
+                    ('Dirty bathrooms on the floor.', 'Pending', '2023-01-05', 445678);
+                '''
+        cursor.execute(query)
+        connection.commit()
+
+
+        query = '''
+                    INSERT INTO Outpass (LeavingDate, JoiningDate, Purpose, OStatus, cms)
+                    VALUES 
+                    ('2023-02-01', '2023-02-03', 'Family Function', 'Pending', 429551),
+                    ('2023-02-05', '2023-02-07', 'Medical Emergency', 'Approved', 423482),
+                    ('2023-02-10', '2023-02-12', 'Vacation', 'Pending', 404520),
+                    ('2023-02-15', '2023-02-17', 'Personal Reasons', 'Approved', 436789),
+                    ('2023-02-20', '2023-02-22', 'Visit Home', 'Pending', 445678);
+                
+                '''
+        cursor.execute(query)
+        connection.commit()
+
+        query = '''
+                    INSERT INTO Notifications (NText, NDate, HID)
+                    VALUES
+                    ('Hostel Meeting on 2023-02-10', '2023-02-08', 1),
+                    ('Maintenance Notice - Water Supply on 2023-02-15', '2023-02-12', 2),
+                    ('Upcoming Cultural Event on 2023-02-20', '2023-02-18', 3),
+                    ('Room Inspection on 2023-02-25', '2023-02-23', 4),
+                    ('Important Announcement - Exams Schedule on 2023-03-01', '2023-02-27', 1);
+
+                '''
         cursor.execute(query)
         connection.commit()
         
