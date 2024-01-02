@@ -14,7 +14,7 @@ class AdminOutpass(tk.Frame):
         center_frame = tk.Frame(self, bg='white')
         center_frame.pack(expand=True, fill='both')
 
-        columns = ('OID', 'Leaving Date', 'Joining Date', 'Purpose', 'Status', 'Student CMS', 'Guardian 1', 'Guardian 2', 'Guardian 3')
+        columns = ('OID', 'Leaving Date', 'Joining Date', 'Purpose', 'Status', 'Student CMS', 'Guardian 1 Phone #', 'Guardian 2 Phone #', 'Guardian 3 Phone #')
         self.outpass_tree = ttk.Treeview(center_frame, columns=columns, show='headings', selectmode='browse')
 
         for col in columns:
@@ -37,7 +37,7 @@ class AdminOutpass(tk.Frame):
             cursor = connection.cursor()
 
             query = """
-                SELECT o.OID, o.LeavingDate, o.JoiningDate, o.Purpose, o.OStatus, o.cms, g1.gName AS Guardian1, g2.gName AS Guardian2, g3.gName AS Guardian3
+                SELECT o.OID, o.LeavingDate, o.JoiningDate, o.Purpose, o.OStatus, o.cms, g1.gPhoneNumber AS Guardian1, g2.gPhoneNumber AS Guardian2, g3.gPhoneNumber AS Guardian3
                 FROM Outpass o
                 LEFT JOIN Guardian g1 ON o.cms = g1.cms
                 LEFT JOIN Guardian g2 ON o.cms = g2.cms
@@ -50,8 +50,8 @@ class AdminOutpass(tk.Frame):
             self.outpass_tree.delete(*self.outpass_tree.get_children())
 
             for outpass in outpasses_data:
-                oid, leaving_date, joining_date, purpose, status, student_cms, guardian1, guardian2, guardian3 = outpass
-                values = (oid, str(leaving_date), str(joining_date), purpose, status, student_cms, guardian1, guardian2, guardian3)
+                oid, leaving_date, joining_date, purpose, status, student_cms, guardian1Contact, guardian2Contact, guardian3Contact = outpass
+                values = (oid, str(leaving_date), str(joining_date), purpose, status, student_cms, guardian1Contact, guardian2Contact, guardian3Contact)
                 self.outpass_tree.insert('', 'end', values=values)
 
         except mysql.connector.Error as e:

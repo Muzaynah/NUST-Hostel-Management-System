@@ -18,11 +18,15 @@ grant execute on procedure get_complaint_data_through_cms to 'student'@'localhos
 
 
 
+grant select on attendanceevent to 'manager'@'localhost';
+
 grant execute on procedure get_all_student_data_through_hostel2 to 'manager'@'localhost';
 
 grant select on manager to 'manager'@'localhost';
 
 grant insert on attendanceevent to 'manager'@'localhost';
+
+grant update on attendanceevent to 'manager'@'localhost';
 
 grant insert on student to 'manager'@'localhost';
 
@@ -41,3 +45,7 @@ GRANT UPDATE ON outpass TO 'manager'@'localhost';
 grant select on hostel to 'manager'@'localhost';
 
 GRANT SELECT ON guardian TO 'manager'@'localhost';
+
+grant select on StudentGuardiansAttendanceView to 'manager'@'localhost';
+
+;

@@ -1,7 +1,7 @@
 
 import mysql.connector
 # from mysql import Error
-from config import db_config, sql_script_path, manager_username_trigger_path, student_username_trigger_path,student_fulladdress_trigger_path,procedures_path,grant_student_path
+from config import db_config, sql_script_path, manager_username_trigger_path, student_username_trigger_path,student_fulladdress_trigger_path,procedures_path,grants_path,views_path
 
 def initialize_database():
 
@@ -123,9 +123,20 @@ def initialize_database():
         connection.commit()
         cursor.nextset()
 
+        #creating views
+        with open(views_path,'r') as sql_file:
+            sql_script = sql_file.read()
+        cursor.execute(sql_script,multi=True)
+
+        #reinitializing to reset
+        cursor.close()
+        connection.close()
+
+        connection=mysql.connector.connect(**db_config)
+        cursor=connection.cursor()
 
         #granting users priviliges --------------------------------------------------------------------
-        with open(grant_student_path,'r') as sql_file:
+        with open(grants_path,'r') as sql_file:
             sql_script = sql_file.read()
         cursor.execute(sql_script, multi=True)
 

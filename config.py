@@ -34,7 +34,9 @@ sqlscripts_folder_path = os.path.join(nhms_folder_path, 'sql-scripts')
 sql_script_path = os.path.join(sqlscripts_folder_path,'tables.sql')
 
 procedures_path = os.path.join(sqlscripts_folder_path,'procedures.sql')
-grant_student_path = os.path.join(sqlscripts_folder_path,'grant_student.sql')
+grants_path = os.path.join(sqlscripts_folder_path,'grants.sql')
+
+views_path = os.path.join(sqlscripts_folder_path,'views.sql')
 
 student_username_trigger_path = os.path.join(sqlscripts_folder_path,'student_username_trigger.sql')
 manager_username_trigger_path = os.path.join(sqlscripts_folder_path,'manager_username_trigger.sql')
