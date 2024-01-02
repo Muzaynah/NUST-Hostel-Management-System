@@ -2,10 +2,9 @@ import tkinter as tk
 from tkinter import ttk
 
 class AdminNotification(tk.Frame):
-    def __init__(self, master, show_add_student):
+    def __init__(self, master):
         super().__init__(master, bg='white')
         self.master = master
-        self.show_add_student = show_add_student
         self.create_widgets()
 
     def create_widgets(self):

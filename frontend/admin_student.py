@@ -5,10 +5,9 @@ from config import db_config_manager
 import config
 
 class AdminStudent(tk.Frame):
-    def __init__(self, master, show_add_student):
+    def __init__(self, master):
         super().__init__(master, bg='white')
         self.master = master
-        self.show_add_student = show_add_student
         self.connection=mysql.connector.connect(**db_config_manager)
         self.cursor=self.connection.cursor()
         self.con1=mysql.connector.connect(**db_config_manager)
@@ -27,7 +26,6 @@ class AdminStudent(tk.Frame):
         self.student_tree = ttk.Treeview(center_frame, columns=columns, show='headings', selectmode='browse')
 
         #adding scrollbar to treeview
-        # Create a Scrollbar
         scrollbar = ttk.Scrollbar(self.student_tree, orient="horizontal", command=self.student_tree.xview)
 
         # Configure the Treeview to use the scrollbar
@@ -35,6 +33,7 @@ class AdminStudent(tk.Frame):
 
         # Place the scrollbar on the right side of the Treeview
         scrollbar.pack(side="bottom", fill="x")
+
         #getting initial data for treeview-----------------------------------
 
         #getting hostel id of the logged in manager
@@ -82,24 +81,25 @@ class AdminStudent(tk.Frame):
         scrollbar.pack(side='right', fill='y')
         self.student_tree.configure(yscrollcommand=scrollbar.set)
 
-        add_student_button = Button(self, text='Add Student', command=self.master.show_add_student, bg='#1a2530', fg='white', border=0, width=20, height=1,
+        add_student_button = Button(self, text='Add Student', command=self.show_add_student_window, bg='#1a2530', fg='white', border=0, width=20, height=1,
                             font=('Microsoft YaHei UI Light', 14))
 
         add_student_button.pack(pady=40)
+    
+    def show_add_student_window(self):
+        connection= mysql.connector.connect(**db_config_manager)
+        cursor = connection.cursor()
+        print("Adding student:")
+        self.add_student_window = AddStudentWindow(self,self.student_tree)
 
-    def update_student_table(self, student_data):
-        # Clear existing items in the treeview
-        for item in self.student_tree.get_children():
-            self.student_tree.delete(item)
 
-        # Insert new student data into the treeview
-        for student in student_data:
-            self.student_tree.insert('', 'end', values=student)
+
 
 class AddStudentWindow(tk.Toplevel):
-    def __init__(self, master, add_student_callback):
+    def __init__(self, master,student_tree):
         super().__init__(master)
         self.title('Add Student')
+        self.student_tree=student_tree
         
 
         # Set the size of the window
@@ -115,7 +115,7 @@ class AddStudentWindow(tk.Toplevel):
         # Set the geometry of the window
         self.geometry(f'{self.width}x{self.height}+{x}+{y}')
 
-        self.add_student_callback = add_student_callback
+        # self.add_student_callback = add_student_callback
 
         self.canvas = tk.Canvas(self)
         self.canvas.pack(side="left", fill="both", expand=True)
@@ -153,16 +153,6 @@ class AddStudentWindow(tk.Toplevel):
                   'Batch', 'Department', 'Program','Guardian 1 Name','Guardian 1 Phone Number','Guardian 1 Email','Guardian 2 Name','Guardian 2 Phone Number','Guardian 2 Email','Guardian 3 Name','Guardian 3 Phone Number','Guardian 3 Email']
         self.entry_fields = {}
 
-        # for label in labels:
-        #     tk.Label(self.scrollable_frame, text=label).pack()
-        #     if label == 'Department':
-        #         # Create a dropdown menu for departments
-        #         entry = ttk.Combobox(self.scrollable_frame, values=self.departments, state="readonly")
-        #     else:
-        #         entry = Entry(self.scrollable_frame)
-        #     entry.pack()
-        #     self.entry_fields[label] = entry
-
         for label in labels:
             entry_frame = tk.Frame(self.scrollable_frame)  # Create a frame for each label and entry
             entry_frame.pack(fill=tk.X, padx=100, pady=5)  # Pack the frame horizontally with padding
@@ -186,6 +176,8 @@ class AddStudentWindow(tk.Toplevel):
 
         
     def save_student(self):
+        connection =mysql.connector.connect(**db_config_manager)
+        cursor=connection.cursor()
         # Retrieve data from entry fields and call the callback to add the student
         student_data = {label: entry.get() for label, entry in self.entry_fields.items()}
         print("Switching to Adding student:")
@@ -195,11 +187,11 @@ class AddStudentWindow(tk.Toplevel):
         cms, password, firstName, lastName, roomNumber, age, email, phoneNumber, city, street, houseNumber, batch, departmentName, program, g1_name, g1_phone_number,g1_email, g2_name, g2_phone_number,g2_email, g3_name, g3_phone_number,g3_email= student_data.values()
         
         # Get department ID from dname
-        self.cursor.execute(f"SELECT dID FROM Department WHERE dname = '"+departmentName+"';")
-        department_id = self.cursor.fetchone()  # Fetch the first column value
+        cursor.execute(f"SELECT dID FROM Department WHERE dname = '"+departmentName+"';")
+        department_id = cursor.fetchone()  # Fetch the first column value
 
         # Adding into the student table
-        query = '''
+        query1 = '''
             INSERT INTO Student(cms, sFirstName, sLastName, sAge, sEmail, sPhoneNumber, city, street, house_no, sRoomNumber,
                                 sBatch, sPassword, sProgram, HID, dID) 
             VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
@@ -211,15 +203,6 @@ class AddStudentWindow(tk.Toplevel):
         )
         print(student_values)
 
-        try:
-            self.cursor.execute(query, student_values)
-            print(self.cursor.fetchall())
-            self.connection.commit()
-            print("Student added successfully!")
-            # Call the callback function to update the treeview in the AdminStudent class
-            self.add_student_callback(student_data)
-        except mysql.connector.Error as err:
-            print(f"Error: {err}")
 
         if(g2_name==''):
             g2_name='NULL'
@@ -235,13 +218,49 @@ class AddStudentWindow(tk.Toplevel):
             g3_email='NULL'
         #adding in the guardians
         print(g1_name,g1_phone_number,g1_email)
-        query = f'''INSERT INTO Guardian(gName,gPhoneNumber,gEmail,cms) 
+        query2 = f'''INSERT INTO Guardian(gName,gPhoneNumber,gEmail,cms) 
                 VALUES('{g1_name}',{g1_phone_number},'{g1_email}',{cms}),
                         ('{g2_name}',{g2_phone_number},'{g2_email}',{cms}),
                         ('{g3_name}',{g3_phone_number},'{g3_email}',{cms});
                         '''
+        
+        try:
+            cursor.execute(query1, student_values)
+            print(self.cursor.fetchall())
+            connection.commit()
+            cursor.execute(query2)
+            connection.commit()
+            print("Student added successfully!")
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
 
-        self.cursor.execute(query)
-        self.connection.commit()
+        #resetting the tree
+        self.student_tree.delete(*self.student_tree.get_children())
+
+        #getting student data
+        print(self.hostel_id)
+        query = f"call get_all_student_data_through_hostel2({self.hostel_id[0]});"
+        self.cursor.execute(query, multi=True)
+        result = self.cursor.fetchall()
+        print(result)
+
+        # Iterate through each row and insert into the treeview
+        for row in result:
+            cms = row[0]
+            
+            #getting guardian data for every student
+            query = f"select gName, gPhoneNumber,gEmail FROM Guardian WHERE cms={cms}"
+            cursor.execute(query)
+            guardian_result =  cursor.fetchall()
+            print(guardian_result)
+            
+            #concatenate the 3 guardians with the row array
+            for i in range(len(guardian_result)):
+                if(guardian_result[i]):
+                    row = row + guardian_result[i]
+
+            self.student_tree.insert('', tk.END, values=row)
+
+        
 
         self.destroy()

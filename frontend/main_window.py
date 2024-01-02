@@ -75,11 +75,11 @@ class MainWindow(tk.Tk):
 
     def create_admin_dashboard(self):
         self.admin_dashboard = AdminDashboard(self, self.show_moutpass, self.show_mcomplaint, self.show_mattendance, self.show_mstudent, self.show_mnotification)
-        self.admin_student = AdminStudent(self, self.show_admin_dashboard)
+        self.admin_student = AdminStudent(self)
         self.admin_attendance = AdminAttendance(self)
         self.admin_complaint = AdminComplaint(self)
         self.admin_outpass = AdminOutpass(self)
-        self.admin_notification = AdminNotification(self, self.show_add_student)
+        self.admin_notification = AdminNotification(self)
 
     def show_admin_dashboard(self):
         if self.admin_dashboard is not None:
@@ -271,13 +271,13 @@ class MainWindow(tk.Tk):
 
         self.admin_student.grid(row=0, column=0, sticky='nsew')
 
-    def show_add_student(self):
-        print("Adding student:")
-        self.add_student_window = AddStudentWindow(self, self.add_student)
+    # def show_add_student(self):
+    #     print("Adding student:")
+    #     self.add_student_window = AddStudentWindow(self, self.add_student)
 
-    def add_student(self, student_data):
-        print("Adding student:", student_data)
-        self.admin_student.update_student_table([list(student_data.values())])
+    # def add_student(self, student_data):
+    #     print("Adding student:", student_data)
+    #     self.admin_student.update_student_table([list(student_data.values())])
 
     def show_mnotification(self):
         print("Switching to admin notification Section")

@@ -28,6 +28,7 @@ class AdminAttendance(tk.Frame):
         self.current_month=date_object.month
         self.current_day=date_object.day
         self.status_text=tk.StringVar()
+        self.first_click = False
 
         #getting hostel id of the logged in manager
         query =f"select hid from manager where mid={config.current_user_id[0]}"
@@ -80,11 +81,6 @@ class AdminAttendance(tk.Frame):
                                               bg='#1a2530', fg='white', border=0, width=20, height=1, font=('Helvetica', 12))
         self.take_attendance_button.pack(pady=20)
 
-        # # Add random data for the old dates
-        # for date in self.dates:
-        #     self.attendance_data[date] = {f'Student {i}': random.choice(['Present', 'Absent', 'Leave']) for i in range(1, 6)}
-        
-        # self.update_attendance_table(self.dates[self.current_date_index])
 
     def show_previous_date(self):
         self.attendance_tree.delete(*self.attendance_tree.get_children())
@@ -111,19 +107,31 @@ class AdminAttendance(tk.Frame):
         query = f"SELECT aDate FROM attendanceevent;"
         cursor.execute(query)
         results=cursor.fetchall()
-        if self.current_date in results:
+        print(self.current_date,results)
+        # for result in results:
+        #     date_tuple = result[0]  # Extract the date tuple from the result tuple
+        #     result = datetime.strptime(str(date_tuple), '%Y-%m-%d')
+        #     # result = date_tuple.strftime('%Y-%m-%d')
+        results = [result[0].strftime('%Y-%m-%d') for result in results]
+        date_object = datetime.strptime(str(self.current_date), '%Y-%m-%d').date()
+        print(results,date_object)
+        if str(date_object) in results:
+            print('line 111')
             #execute queries to fetch data
-            query = f'''SELECT Student.cms,CONCAT(sFirstName, ' ',sLastName, sPhoneNumber,sRoomNumber,attendance 
+            query = f'''SELECT cms,CONCAT(sFirstName, ' ',sLastName), sPhoneNumber,sRoomNumber,attendance 
                         FROM StudentGuardiansAttendanceView
-                        WHERE ADate = {self.current_date}
+                        WHERE ADate = '{self.current_date}'
             '''
             results = cursor.execute(query)
             if(results):
                 for result in results:
                     self.attendance_tree.insert('',tk.END,values=result)
-
-            self.status_text.set("Attendance Status: Marked (Immutable)")
+            if(self.current_date == self.todays_date):
+                self.status_text.set("Attendance Status: In Progress")
+            else:
+                self.status_text.set("Attendance Status: Marked (Immutable)")
         else:
+            print('line 124')
             self.status_text.set("Attendance Status: Unmarked")
 
             #insert data of all students without the attendance status
@@ -154,26 +162,37 @@ class AdminAttendance(tk.Frame):
             self.status_text.set("Attendance Status: In Progress")
 
             #insert data into attendance event with attendance as absent
-
-            #get all students cms
-            query = f"select DISTINCT cms FROM StudentGuardiansAttendanceView where StudentHostelID = {self.hostel_id[0]}"
-            cursor.execute(query)
-            cms_results=cursor.fetchall()
-            for cms in cms_results: #insert each cms
-                query = f"INSERT INTO attendanceevent(ADate,Attendance,cms) VALUES( '{self.current_date.strftime('%Y-%m-%d')}','Absent',{cms[0]})"
+            if(self.first_click==False):
+                self.first_click=True
+                #get all students cms
+                query = f"select DISTINCT cms FROM StudentGuardiansAttendanceView where StudentHostelID = {self.hostel_id[0]}"
                 cursor.execute(query)
-                connection.commit()
+                cms_results=cursor.fetchall()
+                # for cms in cms_results: #insert each cms
+                #     query = f"INSERT INTO attendanceevent(ADate,Attendance,cms) VALUES( '{self.current_date.strftime('%Y-%m-%d')}','Absent',{cms[0]})"
+                #     cursor.execute(query)
+                #     connection.commit()
+                for cms in cms_results:
+                    #check if cms already exists
+                    check_query = f"SELECT COUNT(*) FROM attendanceevent WHERE cms = {cms[0]} AND ADate = '{self.current_date.strftime('%Y-%m-%d')}'"
+                    cursor.execute(check_query)
+                    count = cursor.fetchone()[0]
 
-            take_attendance_window = AttendanceEditorWindow(self, self.current_date, name_column,self.current_date)
-            self.attendance_tree.delete(*self.attendance_tree.get_children())
-            self.show_current_date()
+                    if count == 0:
+                        #insert if it doesnt already exist
+                        insert_query = f"INSERT INTO attendanceevent(ADate, Attendance, cms) VALUES ('{self.current_date.strftime('%Y-%m-%d')}', 'Absent', {cms[0]})"
+                        cursor.execute(insert_query)
+                        connection.commit()
+
+            take_attendance_window = AttendanceEditorWindow(self, self.current_date, name_column,self.current_date,self.attendance_tree,self.show_current_date)
+            
         else:
             messagebox.showerror("Error","You can't take the attendance for this day.")
 
 
 
 class AttendanceEditorWindow(tk.Toplevel):
-    def __init__(self, take_attendance_window, date, attendance_data,current_date):
+    def __init__(self, take_attendance_window, date, attendance_data,current_date,attendance_tree,show_current_date):
         super().__init__(take_attendance_window)
         self.title('Attendance Editor')
         self.take_attendance_window = take_attendance_window
@@ -183,6 +202,8 @@ class AttendanceEditorWindow(tk.Toplevel):
         self.current_date = current_date
         print(self.current_date)
         print(self.date)
+        self.attendance_tree = attendance_tree
+        self.show_current_date=show_current_date
 
         self.create_widgets()
 
@@ -228,7 +249,7 @@ class AttendanceEditorWindow(tk.Toplevel):
             self.student_vars.append((cms_var, status_var))
 
         # Add the Save button
-        save_button = Button(inner_frame, text='Save', command=self.save_attendance, bg='#1a2530', fg='white', border=0,
+        save_button = Button(inner_frame, text='Save', command=lambda:self.save_attendance(self.show_current_date), bg='#1a2530', fg='white', border=0,
                              font=('Helvetica', 12))
         save_button.pack(pady=20)
 
@@ -236,7 +257,7 @@ class AttendanceEditorWindow(tk.Toplevel):
         inner_frame.update_idletasks()
         canvas.config(scrollregion=canvas.bbox("all"))
 
-    def save_attendance(self):
+    def save_attendance(self,show_current_date):
 
         connection = mysql.connector.connect(**db_config_manager)
         cursor = connection.cursor()
@@ -254,8 +275,10 @@ class AttendanceEditorWindow(tk.Toplevel):
             cursor.execute(query)
             connection.commit()
             
+        
+        #resetting the treeview and updating
+        self.attendance_tree.delete(*self.attendance_tree.get_children())
+        # self.show_current_date()
+        show_current_date()
 
-        # # Save the attendance data and update the Treeview
-        # self.take_attendance_window.admin_attendance.save_attendance(self.date, updated_attendance_data)
-        # self.take_attendance_window.destroy()  # Close the TakeAttendanceWindow
         self.destroy()  # Close the AttendanceEditorWindow
