@@ -80,7 +80,7 @@ class StudentComplaint(tk.Frame):
         results=self.cursor.fetchall()
         for result in results:
             self.complaint_tree.insert('',tk.END,values=result)
-        print('line 83 in student_complaint',results)
+        # print('line 83 in student_complaint',results)
         
         # Filter Options
         self.filter_options = ["All", "In Progress", "Resolved", "Pending"]

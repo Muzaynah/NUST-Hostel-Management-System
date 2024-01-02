@@ -29,18 +29,44 @@ class StudentAttendance(tk.Frame):
         right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=10, pady=10)
 
         # Filter options
-        date_label = Label(right_frame, text='Date:')
-        date_label.pack(pady=(0, 5))
-        self.date_entry = Entry(right_frame)
-        self.date_entry.pack(pady=(0, 10))
+        # date_label = Label(right_frame, text='Date:')
+        # date_label.pack(pady=(0, 5))
+        # self.date_entry = Entry(right_frame)
+        # self.date_entry.pack(pady=(0, 10))
 
-        status_label = Label(right_frame, text='Status:')
-        status_label.pack(pady=(0, 5))
-        self.status_var = StringVar(right_frame)
-        status_options = ['All', 'Present', 'Absent']
-        self.status_var.set(status_options[0])  # Default to 'All'
-        status_dropdown = OptionMenu(right_frame, self.status_var, *status_options)
-        status_dropdown.pack(pady=(0, 10))
+        # Date label
+        date_label = Label(right_frame, text='Date:', font=('Microsoft YaHei UI Light', 12), bg='white')
+        date_label.pack()
+
+        # Date dropdowns
+        self.day_var = StringVar()
+        self.month_var = StringVar()
+        self.year_var = StringVar()
+
+        day_menu = ttk.Combobox(right_frame, textvariable=self.day_var, values=["Day"] + list(range(1, 32)), state="readonly")
+        month_menu = ttk.Combobox(right_frame, textvariable=self.month_var, values=["Month"] + list(range(1, 13)), state="readonly")
+        year_menu = ttk.Combobox(right_frame, textvariable=self.year_var, values=["Year"] + list(range(datetime.now().year, datetime.now().year + 1)), state="readonly")
+        
+        #default values
+        self.day_var.set("Day")
+        self.month_var.set("Month")
+        self.year_var.set("Year")
+
+        day_menu.pack()
+        month_menu.pack()
+        year_menu.pack()
+
+        self.status_options = ["All", "Present", "Absent"]
+        self.status_label = Label(right_frame, text='Status:', font=('Microsoft YaHei UI Light', 12), bg='white')
+        self.status_label.pack(pady=5)
+        self.status_var = StringVar()
+        self.status_var.set(self.status_options[0])
+
+        self.status_menu = ttk.Combobox(right_frame, textvariable=self.status_var, values=self.status_options, state="readonly")
+        # self.status_menu.bind('<<ComboboxSelected>>', lambda _: self.filter_complaints(self.complaint_tree, self.filter_var.get()))
+        self.status_menu.pack(pady=10)
+
+        self.status_var.set(self.status_options[0])
 
         # Filter and Reset buttons
         filter_button = Button(right_frame, text='Filter', command=self.apply_filters)
@@ -81,33 +107,91 @@ class StudentAttendance(tk.Frame):
 
     def apply_filters(self):
 
-        # Get filter values
-        selected_date = self.date_entry.get()
-        selected_status = self.status_var.get()
+        #resetting the tree first 
+        self.attendance_tree.delete(*self.attendance_tree.get_children())
 
-        # Apply filters to the treeview (replace with actual data retrieval)
-        filtered_data = self.get_filtered_data(selected_date, selected_status)
+        connection = mysql.connector.connect(**db_config_student)
+        cursor = connection.cursor()
+        #get all data first
+        query = f"call get_attendance_data({config.current_user_id[0]})"
+        cursor.execute(query, multi=True)
+        results = cursor.fetchall()
+        
+        if(results):
+            for result in results:
+                self.attendance_tree.insert('',tk.END,values=result)
+        
+        #the filtering part
+        items=self.attendance_tree.get_children()
+        print(items)
+        #by date
+        new_day = self.day_var.get()
+        if(new_day!="Day"):
+            i=0
+            for item in items:
+                print(item)
+                item_values = self.attendance_tree.item(item,'values')
+                date_object = datetime.strptime(item_values[0], '%Y-%m-%d')
+                year = date_object.year
+                month=date_object.month
+                day=date_object.day
+                print(new_day,day)
+                if(new_day != str(day)): 
+                    self.attendance_tree.delete(item)
+        new_month = self.month_var.get()
+        items=self.attendance_tree.get_children()
+        if(new_month!="Month"):
+            for item in items:
+                print(item)
+                item_values = self.attendance_tree.item(item,'values')
+                date_object = datetime.strptime(item_values[0], '%Y-%m-%d')
+                year = date_object.year
+                month=date_object.month
+                day=date_object.day
+                print(new_month,month)
+                if(new_month!=str(month)):
+                    print('deleting ',item)
+                    self.attendance_tree.delete(item)
+                    
+        new_year = self.year_var.get()
+        items=self.attendance_tree.get_children()
+        if(new_year!="Year"):
+            for item in items:
+                item_values = self.attendance_tree.item(item,'values')
+                date_object = datetime.strptime(item_values[0], '%Y-%m-%d')
+                year = date_object.year
+                month=date_object.month
+                day=date_object.day
+                print(new_year,year)
+                if(new_year != str(year)):
+                    self.attendance_tree.delete(item)
 
-        # Clear existing treeview items
-        for item in self.attendance_tree.get_children():
-            self.attendance_tree.delete(item)
-
-        # Insert filtered data into the treeview
-        for item in filtered_data:
-            self.attendance_tree.insert('', tk.END, values=item)
+        #by status
+        new_status = self.status_var.get()
+        items=self.attendance_tree.get_children()
+        if(new_status!="All"):
+            for item in items:
+                item_values = self.attendance_tree.item(item,'values')
+                status = item_values[1]
+                print(new_status,status)
+                if(new_status != status):
+                    self.attendance_tree.delete(item)
 
     def reset_filters(self):
-        # Reset filter fields
-        #!!!!!!!!!
-        # self.date_entry.set('All')
+        connection = mysql.connector.connect(**db_config_student)
+        cursor=connection.cursor()
+
+        self.day_var.set("Day")
+        self.month_var.set("Month")
+        self.year_var.set("Year")
         self.status_var.set('All')
 
         # Reset the treeview to show all data (replace with actual data retrieval)
         # all_data = [("2023-01-01", "Present"), ("2023-01-02", "Absent"), ("2023-01-03", "Present")]
 
         query = f"call get_attendance_data({config.current_user_id[0]})"
-        self.cursor.execute(query)
-        results = self.cursor.fetchall()
+        cursor.execute(query)
+        results = cursor.fetchall()
 
         # Clear existing treeview items
         for item in self.attendance_tree.get_children():
