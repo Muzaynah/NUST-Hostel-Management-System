@@ -120,9 +120,11 @@ class AdminAttendance(tk.Frame):
             #execute queries to fetch data
             query = f'''SELECT cms,CONCAT(sFirstName, ' ',sLastName), sPhoneNumber,sRoomNumber,attendance 
                         FROM StudentGuardiansAttendanceView
-                        WHERE ADate = '{self.current_date}'
+                        WHERE ADate = "{date_object}";
             '''
-            results = cursor.execute(query)
+            cursor.execute(query)
+            results= cursor.fetchall()
+            print(results)
             if(results):
                 for result in results:
                     self.attendance_tree.insert('',tk.END,values=result)
@@ -158,7 +160,8 @@ class AdminAttendance(tk.Frame):
                 if values:
                     first_column_value = values[1]
                     cms_value = values[0]
-                    name_column.append([cms_value,first_column_value,''])
+                    status_value = values[4]
+                    name_column.append([cms_value,first_column_value,status_value])
             self.status_text.set("Attendance Status: In Progress")
 
             #insert data into attendance event with attendance as absent
@@ -168,10 +171,6 @@ class AdminAttendance(tk.Frame):
                 query = f"select DISTINCT cms FROM StudentGuardiansAttendanceView where StudentHostelID = {self.hostel_id[0]}"
                 cursor.execute(query)
                 cms_results=cursor.fetchall()
-                # for cms in cms_results: #insert each cms
-                #     query = f"INSERT INTO attendanceevent(ADate,Attendance,cms) VALUES( '{self.current_date.strftime('%Y-%m-%d')}','Absent',{cms[0]})"
-                #     cursor.execute(query)
-                #     connection.commit()
                 for cms in cms_results:
                     #check if cms already exists
                     check_query = f"SELECT COUNT(*) FROM attendanceevent WHERE cms = {cms[0]} AND ADate = '{self.current_date.strftime('%Y-%m-%d')}'"
@@ -238,7 +237,7 @@ class AttendanceEditorWindow(tk.Toplevel):
             tk.Label(student_frame, textvariable=student_var, width=17, anchor='w').pack(side=LEFT)
 
             # Set the default status to "Absent" if the status is an empty string
-            default_status = 'Absent' if status == '' else status
+            default_status = 'Absent' if status == '' or status == 'NULL' else status
             status_var = StringVar(value=default_status)
 
             Radiobutton(student_frame, text='Absent', variable=status_var, value='Absent').pack(side=LEFT)
