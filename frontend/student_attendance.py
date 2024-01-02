@@ -52,7 +52,7 @@ class StudentAttendance(tk.Frame):
         # Treeview to display attendance records------------------------------------------------------------
 
         #gets the current users attendance logs
-        print('line 59 student_attendance')
+        # print('line 59 student_attendance')
         query = f"call get_attendance_data({config.current_user_id[0]})"
         self.cursor.execute(query, multi=True)
         results = self.cursor.fetchall()

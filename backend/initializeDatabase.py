@@ -62,7 +62,7 @@ def initialize_database():
         
         #splitting the statements in the file 
         sql_statements = sql_script.split('--')
-        print(sql_statements)
+        # print(sql_statements)
         for statement in sql_statements:
             if statement.strip():  #to insure no blank statements execute
                 cursor.execute(statement)
@@ -129,7 +129,7 @@ def initialize_database():
             sql_script = sql_file.read()
         cursor.execute(sql_script, multi=True)
 
-        print(sql_script)
+        # print(sql_script)
         
         #adding in default students and admin:
         

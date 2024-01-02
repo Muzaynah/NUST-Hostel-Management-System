@@ -12,6 +12,8 @@ grant insert on outpass to 'student'@'localhost';
 
 grant execute on procedure get_outpass_data_through_cms to 'student'@'localhost';
 
+grant execute on procedure get_complaint_data_through_cms to 'student'@'localhost';
+
 
 
 

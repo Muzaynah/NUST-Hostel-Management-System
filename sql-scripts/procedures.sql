@@ -65,3 +65,12 @@ BEGIN
     WHERE cms = current_student_id;
 END;
 --
+CREATE PROCEDURE get_complaint_data_through_cms(
+    IN current_student_id INT
+)
+BEGIN
+    SELECT CID,CDate,CDescription,CStatus
+    FROM Complaint
+    WHERE cms = current_student_id;
+END;
+--

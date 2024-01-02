@@ -10,8 +10,9 @@ class StudentComplaint(tk.Frame):
         super().__init__(master)
         self.master = master
         self.complaint_data = []
+        self.connection = mysql.connector.connect(**db_config_student)
+        self.cursor = self.connection.cursor()
         self.create_widgets()
-        self.connect_to_database()
 
     def create_widgets(self):
         left_frame = tk.Frame(self, width=600, height=600, bg='white')
@@ -31,22 +32,22 @@ class StudentComplaint(tk.Frame):
         self.complaint_text.bind("<FocusIn>", self.on_text_focus)
         self.complaint_text.bind("<FocusOut>", self.on_text_focus_out)
 
-        # Date label
-        date_label = Label(left_frame, text='Date:', font=('Microsoft YaHei UI Light', 12), bg='white')
-        date_label.pack()
+        # # Date label
+        # date_label = Label(left_frame, text='Date:', font=('Microsoft YaHei UI Light', 12), bg='white')
+        # date_label.pack()
 
-        # Date dropdowns
-        self.leaving_day_var = StringVar()
-        self.leaving_month_var = StringVar()
-        self.leaving_year_var = StringVar()
+        # # Date dropdowns
+        # self.leaving_day_var = StringVar()
+        # self.leaving_month_var = StringVar()
+        # self.leaving_year_var = StringVar()
 
-        day_menu = ttk.Combobox(left_frame, textvariable=self.leaving_day_var, values=["Day"] + list(range(1, 32)), state="readonly")
-        month_menu = ttk.Combobox(left_frame, textvariable=self.leaving_month_var, values=["Month"] + list(range(1, 13)), state="readonly")
-        year_menu = ttk.Combobox(left_frame, textvariable=self.leaving_year_var, values=["Year"] + list(range(datetime.now().year, datetime.now().year + 1)), state="readonly")
+        # day_menu = ttk.Combobox(left_frame, textvariable=self.leaving_day_var, values=["Day"] + list(range(1, 32)), state="readonly")
+        # month_menu = ttk.Combobox(left_frame, textvariable=self.leaving_month_var, values=["Month"] + list(range(1, 13)), state="readonly")
+        # year_menu = ttk.Combobox(left_frame, textvariable=self.leaving_year_var, values=["Year"] + list(range(datetime.now().year, datetime.now().year + 1)), state="readonly")
 
-        day_menu.pack()
-        month_menu.pack()
-        year_menu.pack()
+        # day_menu.pack()
+        # month_menu.pack()
+        # year_menu.pack()
 
         # Submit and Reset Buttons
         submit_button = Button(left_frame, text='Submit', command=self.submit_complaint,
@@ -61,7 +62,8 @@ class StudentComplaint(tk.Frame):
         Label(right_frame, text='Complaint History', font=('Microsoft YaHei UI Light', 18), bg='white').pack(pady=20)
 
         # Complaint Treeview
-        columns = ('Complaint', 'Date', 'Description', 'Status')
+
+        columns = ('Complaint ID', 'Date', 'Description', 'Status')
         self.complaint_tree = ttk.Treeview(right_frame, columns=columns, show='headings', height=15)
         for col in columns:
             self.complaint_tree.heading(col, text=col)
@@ -71,24 +73,29 @@ class StudentComplaint(tk.Frame):
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         self.complaint_tree.config(yscrollcommand=scrollbar.set)
 
+        #fetching data
+        # results = self.cursor.callproc('get_complaint_data_through_cms',[config.current_user_id[0]])
+        query =f"call get_complaint_data_through_cms({config.current_user_id[0]})"
+        self.cursor.execute(query,multi=True)
+        results=self.cursor.fetchall()
+        for result in results:
+            self.complaint_tree.insert('',tk.END,values=result)
+        print('line 83 in student_complaint',results)
+        
         # Filter Options
-        filter_options = ["All", "In Progress", "Resolved", "Pending"]
-        filter_label = Label(right_frame, text='Filter Complaints:', font=('Microsoft YaHei UI Light', 12), bg='white')
-        filter_label.pack(pady=5)
+        self.filter_options = ["All", "In Progress", "Resolved", "Pending"]
+        self.filter_label = Label(right_frame, text='Filter Complaints:', font=('Microsoft YaHei UI Light', 12), bg='white')
+        self.filter_label.pack(pady=5)
         self.filter_var = StringVar()
-        self.filter_var.set(filter_options[0])
+        self.filter_var.set(self.filter_options[0])
 
-        filter_menu = ttk.Combobox(right_frame, textvariable=self.filter_var, values=filter_options, state="readonly")
-        filter_menu.bind('<<ComboboxSelected>>', lambda _: self.filter_complaints(self.complaint_tree, self.filter_var.get()))
-        filter_menu.pack(pady=10)
+        self.filter_menu = ttk.Combobox(right_frame, textvariable=self.filter_var, values=self.filter_options, state="readonly")
+        self.filter_menu.bind('<<ComboboxSelected>>', lambda _: self.filter_complaints(self.complaint_tree, self.filter_var.get()))
+        self.filter_menu.pack(pady=10)
 
         reset_button = Button(right_frame, text='Reset', command=lambda: self.filter_complaints(self.complaint_tree, "All"),
                               font=('Microsoft YaHei UI Light', 12), bg='#1a2530', fg='white', border=0, width=10, height=1)
         reset_button.pack(pady=5)
-
-    def connect_to_database(self):
-        self.conn = mysql.connector.connect(**db_config_student)
-        self.cursor = self.conn.cursor()
 
     def submit_complaint(self):
         description = self.complaint_text.get("1.0", "end-1c")
@@ -96,13 +103,13 @@ class StudentComplaint(tk.Frame):
             messagebox.showerror("Error", "Complaint field must be filled.")
             return
 
-        leaving_date = datetime(int(self.leaving_year_var.get()), int(self.leaving_month_var.get()), int(self.leaving_day_var.get()))
+        # leaving_date = datetime(int(self.leaving_year_var.get()), int(self.leaving_month_var.get()), int(self.leaving_day_var.get()))
 
-        complaint_data = ("Complaint {}".format(len(self.complaint_data) + 1), leaving_date.strftime("%Y-%m-%d"), description, "Pending")
-        self.complaint_data.append(complaint_data)
+        # complaint_data = ("Complaint {}".format(len(self.complaint_data) + 1), leaving_date.strftime("%Y-%m-%d"), description, "Pending")
+        # self.complaint_data.append(complaint_data)
 
-        self.update_complaint_tree()
-        self.insert_complaint_into_db(description, leaving_date, "Pending")
+        # self.update_complaint_tree()
+        self.insert_complaint_into_db(description, "Pending")
 
         success_window = tk.Toplevel(self.master)
         success_window.title("Success")
@@ -127,46 +134,72 @@ class StudentComplaint(tk.Frame):
         # Reset fields after submission
         self.reset_fields()
 
-    def insert_complaint_into_db(self, description, leaving_date, status):
+    def insert_complaint_into_db(self, description, status):
+        connection = mysql.connector.connect(**db_config_student)
+        cursor=connection.cursor()
         insert_query = """
         INSERT INTO Complaint (CDescription, CStatus, CDate, cms)
-        VALUES (%s, %s, %s, %s);
+        VALUES (%s, %s, current_date(), %s);
         """
         cms_id = config.current_user_id[0]
-        data = (description, status, leaving_date.strftime('%Y-%m-%d'), cms_id)
+        data = (description, status, cms_id)
 
         try:
-            self.cursor.execute(insert_query, data)
-            self.conn.commit()
+            cursor.execute(insert_query, data)
+            connection.commit()
             print("Complaint inserted into the database successfully!")
 
         except Exception as e:
             print(f"Error: {e}")
+        
+        #reset the tree and fetch it again to get updated the tree
+        self.complaint_tree.delete(*self.complaint_tree.get_children())
 
-    def update_complaint_tree(self):
-        for child in self.complaint_tree.get_children():
-            self.complaint_tree.delete(child)
-
-        for item in self.complaint_data:
-            self.complaint_tree.insert('', tk.END, values=item)
+        query =f"call get_complaint_data_through_cms({config.current_user_id[0]})"
+        cursor.execute(query,multi=True)
+        results=cursor.fetchall()
+        for result in results:
+            self.complaint_tree.insert('',tk.END,values=result)
 
     def filter_complaints(self, treeview, status):
+
+        connection = mysql.connector.connect(**db_config_student)
+        cursor=connection.cursor()
+
         treeview.delete(*treeview.get_children())
 
-        if status == "All":
-            for item in self.complaint_data:
-                treeview.insert('', tk.END, values=item)
-        else:
-            for item in self.complaint_data:
-                if item[3] == status:
-                    treeview.insert('', tk.END, values=item)
+        #running queries for complaints 
+        query =f"call get_complaint_data_through_cms({config.current_user_id[0]})"
+        cursor.execute(query,multi=True)
+        results=cursor.fetchall()
+        for result in results:
+            self.complaint_tree.insert('',tk.END,values=result)
+        
+        if(status=="All"): 
+            self.filter_menu.set(self.filter_options[0])
+            return
+
+        #the filtering part
+        items = self.complaint_tree.get_children()
+        print('line 180: ',items)
+        for item in items:
+            #get their values
+            item_values = self.complaint_tree.item(item,'values')
+            print('line 184: ',item_values)
+
+            if(item_values[3] != status):
+                self.complaint_tree.delete(item)
+        
+        items = []
+        for child in self.complaint_tree.get_children():
+            item = self.complaint_tree.item(child)
+            items.append(item['values'])
+        return items
 
     def reset_fields(self):
+      
         self.complaint_text.delete('1.0', tk.END)
         self.complaint_text.insert(tk.END, 'Write complaint detail here')
-        self.leaving_day_var.set('')
-        self.leaving_month_var.set('')
-        self.leaving_year_var.set('')
         self.on_text_focus(None)  # Manually trigger the focus event
 
     def on_text_focus(self, event):
