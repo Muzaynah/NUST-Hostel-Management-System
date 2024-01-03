@@ -57,7 +57,7 @@ class StudentDashboard(tk.Frame):
         student_name_label.pack(side=tk.LEFT, padx=100, pady=10)
 
         # Create a label for more of the student's information
-        student_info_label = Label(top_panel, text=f"{department_name}\t\t{hostel_name} Hostel\n{program}\t\t#{roomNumber}",
+        student_info_label = Label(top_panel, text=f"{department_name}\t\t{hostel_name} Hostel\n         \t\t#{roomNumber}",
                                    font=('Microsoft YaHei UI Light', 20), bg='#014a81', fg='white', anchor=tk.E, justify=tk.LEFT)
         student_info_label.pack(side=tk.RIGHT, padx=100, pady=10)
 
