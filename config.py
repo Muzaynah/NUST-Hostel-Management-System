@@ -8,7 +8,7 @@ current_user_type = ""
 db_config = {
     'host': 'localhost',
     'user': 'root',
-    'password': 'Mf19*twdc',
+    'password': '',
     'database': 'project'
 }
 
