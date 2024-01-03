@@ -15,6 +15,8 @@ class AdminComplaint(tk.Frame):
         center_frame = tk.Frame(self, bg='white')
         center_frame.pack(expand=True, fill='both')
 
+        Label(center_frame, text='Complaints Record (Double click to update status)', font=('Microsoft YaHei UI Light', 20, 'bold'), bg='white', fg = 'black').pack(pady=30)
+
         # Create a treeview for displaying complaints
         columns = ('CID', 'CMS', 'Date', 'Complaint Detail', 'Status')
         self.complaint_tree = ttk.Treeview(center_frame, columns=columns, show='headings', selectmode='browse')

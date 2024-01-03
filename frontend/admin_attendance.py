@@ -45,14 +45,14 @@ class AdminAttendance(tk.Frame):
         center_frame.pack(expand=True, fill='both')
 
         self.date_var = StringVar()
-        date_label = ttk.Label(center_frame, textvariable=self.date_var, font=('Helvetica', 12), style='Header.TLabel')
+        date_label = ttk.Label(center_frame, textvariable=self.date_var, font=('Microsoft YaHei UI Light', 18, 'bold'), style='Header.TLabel')
         date_label.pack(pady=(20, 10))
         self.date_var.set(self.current_date)
 
 
         #label that shows whether attendance for that day is marked/unmarked
-        self.status_label = tk.Label(center_frame, textvariable=self.status_text, font=('Helvetica', 12), bg='white',fg='green')
-        self.status_label.pack()
+        self.status_label = tk.Label(center_frame, textvariable=self.status_text, font=('Microsoft YaHei UI Light', 12), bg='white',fg='green')
+        self.status_label.pack(pady=5)
         self.status_text.set("Attendance Status: ")
 
         #setting up the treeview
@@ -78,7 +78,7 @@ class AdminAttendance(tk.Frame):
         self.show_current_date()
 
         self.take_attendance_button = Button(self, text='Take Attendance', command=self.show_take_attendance_window,
-                                              bg='#1a2530', fg='white', border=0, width=20, height=1, font=('Helvetica', 12))
+                                              bg='#1a2530', fg='white', border=0, width=20, height=1, font=('Microsoft YaHei UI Light', 12))
         self.take_attendance_button.pack(pady=20)
 
 

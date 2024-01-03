@@ -83,7 +83,7 @@ class StudentComplaint(tk.Frame):
         # print('line 83 in student_complaint',results)
         
         # Filter Options
-        self.filter_options = ["All", "In Progress", "Resolved", "Pending"]
+        self.filter_options = ["All", "Resolved", "Pending"]
         self.filter_label = Label(right_frame, text='Filter Complaints:', font=('Microsoft YaHei UI Light', 12), bg='white')
         self.filter_label.pack(pady=5)
         self.filter_var = StringVar()
