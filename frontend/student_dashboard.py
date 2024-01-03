@@ -50,6 +50,7 @@ class StudentDashboard(tk.Frame):
         out_params = [None] * 18
         result = self.cursor.callproc('get_all_student_data', [config.current_user_id[0]] + out_params)
         id, firstName, lastName, age, email, phoneNumber, city, street, house_no, full_address, roomNumber, batch, username, password, program, hostel_id, department_id, hostel_name, department_name = result
+        self.hostel_id = hostel_id
 
         student_name_label = Label(top_panel, text=f"{firstName + ' ' + lastName}\nCMS: {config.current_user_id[0]}",
                                    font=('Microsoft YaHei UI Light', 20, 'bold'), bg='#014a81', fg='white', anchor=tk.W, justify=tk.LEFT)
@@ -98,21 +99,24 @@ class StudentDashboard(tk.Frame):
         notification_listbox.config(yscrollcommand=scrollbar.set)
         scrollbar.config(command=notification_listbox.yview)
 
-        # Sample notifications (replace with your actual notifications)
-        notifications = ["Tomorrow's breakfast timing: From 0900hrs to 1030hrs",
-                          "Dear students, Please be advised that hostelites are prohibited from inviting any guests, "
-                          "siblings, or friends inside the hostel premises. Any individual found bringing a candidate "
-                          "for the NUST Entry Test (NET) into the hostel will face strict disciplinary action. "
-                          "Additionally, the NET of the said candidate will be cancelled.",
-                          "Notification 3", "Notification 4", "Notification 5", "Notification 6",
-                          "Notification 7", "Notification 8", "Notification 9", "Notification 10", "Notification 11",
-                          "Notification 12", "Notification 13", "Notification 14", "Notification 15", "Notification 16",
-                          "Notification 17", "Notification 18", "Notification 19", "Notification 20",
-                          "Notification 21", "Notification 22", "Notification 23", "Notification 24", "Notification 25",
-                          "Notification 26", "Notification 27", "Notification 28", "Notification 29", "Notification 30"]
+        # # Sample notifications (replace with your actual notifications)
+        # notifications = ["Tomorrow's breakfast timing: From 0900hrs to 1030hrs",
+        #                   "Dear students, Please be advised that hostelites are prohibited from inviting any guests, "
+        #                   "siblings, or friends inside the hostel premises. Any individual found bringing a candidate "
+        #                   "for the NUST Entry Test (NET) into the hostel will face strict disciplinary action. "
+        #                   "Additionally, the NET of the said candidate will be cancelled.",
+        #                   "Notification 3", "Notification 4", "Notification 5", "Notification 6",
+        #                   "Notification 7", "Notification 8", "Notification 9", "Notification 10", "Notification 11",
+        #                   "Notification 12", "Notification 13", "Notification 14", "Notification 15", "Notification 16",
+        #                   "Notification 17", "Notification 18", "Notification 19", "Notification 20",
+        #                   "Notification 21", "Notification 22", "Notification 23", "Notification 24", "Notification 25",
+        #                   "Notification 26", "Notification 27", "Notification 28", "Notification 29", "Notification 30"]
 
+        query = f"SELECT NText FROM Notifications WHERE HID = {self.hostel_id}"
+        self.cursor.execute(query)
+        notifications = self.cursor.fetchall()
         # Insert notifications into the listbox
-        [notification_listbox.insert(tk.END, notification) for notification in notifications]
+        [notification_listbox.insert(tk.END, notification[0]) for notification in notifications]
 
         # Bind a callback to handle notification selection
         notification_listbox.bind('<<ListboxSelect>>', self.show_notification_detail)

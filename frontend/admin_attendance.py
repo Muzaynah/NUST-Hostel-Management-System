@@ -118,9 +118,9 @@ class AdminAttendance(tk.Frame):
         if str(date_object) in results:
             print('line 111')
             #execute queries to fetch data
-            query = f'''SELECT cms,CONCAT(sFirstName, ' ',sLastName), sPhoneNumber,sRoomNumber,attendance 
+            query = f'''SELECT DISTINCT cms,CONCAT(sFirstName, ' ',sLastName), sPhoneNumber,sRoomNumber,attendance 
                         FROM StudentGuardiansAttendanceView
-                        WHERE ADate = "{date_object}";
+                        WHERE ADate = "{date_object}" and StudentHostelID = {self.hostel_id[0]};
             '''
             cursor.execute(query)
             results= cursor.fetchall()
