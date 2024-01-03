@@ -302,6 +302,8 @@ class MainWindow(tk.Tk):
             self.admin_complaint.grid_forget()
         if self.password_reset is not None:
             self.password_reset.grid_forget()
+        if self.admin_notification is None:
+            self.admin_notification=AdminNotification(self)
         self.admin_notification.grid(row=0, column=0, sticky='nsew')
 
     def show_mcomplaint(self):

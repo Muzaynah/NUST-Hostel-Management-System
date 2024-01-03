@@ -1,5 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
+import mysql.connector
+import config
+from config import db_config_manager
 
 class AdminNotification(tk.Frame):
     def __init__(self, master):
@@ -8,8 +11,10 @@ class AdminNotification(tk.Frame):
         self.create_widgets()
 
     def create_widgets(self):
+        self.connection = mysql.connector.connect(**db_config_manager)
+        self.cursor = self.connection.cursor()
         # Create a Treeview widget
-        self.notification_tree = ttk.Treeview(self, columns=('Date', 'Detail'), show='headings', selectmode='browse')
+        self.notification_tree = ttk.Treeview(self, columns=('Notification ID','Date', 'Detail'), show='headings', selectmode='browse')
 
         # Define column headings
         self.notification_tree.heading('Date', text='Date')
@@ -18,13 +23,21 @@ class AdminNotification(tk.Frame):
         # Set column widths
         self.notification_tree.column('Date', width=150)  # Adjust the width as needed
         self.notification_tree.column('Detail', width=500)  # Adjust the width as needed
-
-        # Add some sample data (you can replace this with your actual data)
-        self.notification_tree.insert('', 'end', values=('2023-01-01', 'Notification Detail 1'))
-        self.notification_tree.insert('', 'end', values=('2023-01-02', 'Notification Detail 2'))
-
-        # Pack the Treeview widget
         self.notification_tree.pack(padx=10, pady=10, ipady=50)
+
+         #getting hostel id of the logged in manager
+        query =f"select hid from manager where mid={config.current_user_id[0]}"
+        self.cursor.execute(query)
+        self.hostel_id=self.cursor.fetchone()
+
+        #fetch existing notifications
+        query = f"SELECT NID, NDate, NText FROM Notifications where HID = {self.hostel_id[0]}"
+        self.cursor.execute(query)
+        results = self.cursor.fetchall()
+
+        for result in results:
+            self.notification_tree.insert('',tk.END,values=result)
+        
 
         # Add a button to open the panel for adding notifications
         add_notification_button = tk.Button(self, text='Add Notification', command=self.show_add_notification_panel)
@@ -48,8 +61,20 @@ class AdminNotification(tk.Frame):
         save_button.pack(pady=10)
 
     def save_notification(self, add_notification_window, date, details):
+        #save into db
+        query = f"INSERT INTO Notifications(NText,NDate,HID) VALUES ('{details}','{date}',{self.hostel_id[0]});"
+        self.cursor.execute(query)
+        self.connection.commit()
+
+        self.notification_tree.delete(*self.notification_tree.get_children())
+        #fetch existing notifications
+        query = f"SELECT NID, NDate, NText FROM Notifications where HID = {self.hostel_id[0]}"
+        self.cursor.execute(query)
+        results = self.cursor.fetchall()
+        for result in results:
+            self.notification_tree.insert('',tk.END,values=result)
         # Insert the new notification into the Treeview
-        self.notification_tree.insert('', 'end', values=(date, details))
+        # self.notification_tree.insert('', 'end', values=(date, details))
         add_notification_window.destroy()
 
 # Example of usage
