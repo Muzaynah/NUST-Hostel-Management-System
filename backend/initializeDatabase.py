@@ -1,7 +1,7 @@
 
 import mysql.connector
 # from mysql import Error
-from config import db_config, sql_script_path, manager_username_trigger_path, student_username_trigger_path,student_fulladdress_trigger_path,procedures_path,grants_path,views_path
+from config import db_config, sql_script_path, manager_username_trigger_path, student_username_trigger_path,student_fulladdress_trigger_path,procedures_path,grants_path,views_path,encryption_path
 
 def initialize_database():
 
@@ -112,6 +112,17 @@ def initialize_database():
         cursor.execute(query)
         connection.commit()
         cursor.nextset()
+
+        # #encryption procedures
+        # with open(encryption_path,'r') as sql_file:
+        #     sql_script = sql_file.read()
+        # sql_statements = sql_script.split('--')
+        # for statement in sql_statements:
+        #     if statement.strip():  #to insure no blank statements execute
+        #         cursor.execute(statement)
+        #         connection.commit()
+        
+        # cursor.nextset()
 
         #creating views
         with open(views_path,'r') as sql_file:

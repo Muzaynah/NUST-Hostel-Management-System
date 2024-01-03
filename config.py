@@ -38,6 +38,8 @@ grants_path = os.path.join(sqlscripts_folder_path,'grants.sql')
 
 views_path = os.path.join(sqlscripts_folder_path,'views.sql')
 
+encryption_path= os.path.join(sqlscripts_folder_path,'encryption.sql')
+
 student_username_trigger_path = os.path.join(sqlscripts_folder_path,'student_username_trigger.sql')
 manager_username_trigger_path = os.path.join(sqlscripts_folder_path,'manager_username_trigger.sql')
 student_fulladdress_trigger_path = os.path.join(sqlscripts_folder_path,'student_fulladdress_trigger.sql')

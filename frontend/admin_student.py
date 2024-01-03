@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import Label, Button, PhotoImage, ttk, Entry, Toplevel
+from tkinter import Label, Button, PhotoImage, ttk, Entry, Toplevel,messagebox
 import mysql.connector
 from config import db_config_manager
 import config
@@ -185,7 +185,12 @@ class AddStudentWindow(tk.Toplevel):
 
 
         cms, password, firstName, lastName, roomNumber, age, email, phoneNumber, city, street, houseNumber, batch, departmentName, program, g1_name, g1_phone_number,g1_email, g2_name, g2_phone_number,g2_email, g3_name, g3_phone_number,g3_email= student_data.values()
-        
+        if(len(str(cms))!=6):
+            messagebox.showerror("Error","CMS should be 6 digits long.")
+            return
+        if('@' not in email or '@' not in g1_email or '@' not in g2_email or '@' not in g3_email):
+            messagebox.showerror("Error","Invalid Email.")
+            return
         # Get department ID from dname
         cursor.execute(f"SELECT dID FROM Department WHERE dname = '"+departmentName+"';")
         department_id = cursor.fetchone()  # Fetch the first column value
