@@ -119,9 +119,9 @@ class StudentOutpass(tk.Frame):
         
         # self.outpass_tree.tag_configure('approved_tag', background='light green')
 
-        self.outpass_tree.tag_configure('approved', background='#a3d9c2')
+        #self.outpass_tree.tag_configure('approved', background='#a3d9c2')
         # self.outpass_tree.tag_configure('approved', foreground='red')
-        self.outpass_tree.tag_configure('rejected',background='#e8a0a7')
+        #self.outpass_tree.tag_configure('rejected',background='#e8a0a7')
 
         for result in results:
             if result[4]=='Approved':

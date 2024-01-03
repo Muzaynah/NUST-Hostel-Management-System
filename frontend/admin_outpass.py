@@ -14,6 +14,8 @@ class AdminOutpass(tk.Frame):
         center_frame = tk.Frame(self, bg='white')
         center_frame.pack(expand=True, fill='both')
 
+        Label(center_frame, text='Outpass Record (Double click to update status)', font=('Microsoft YaHei UI Light', 20, 'bold'), bg='white', fg = 'black').pack(pady=30)
+
         columns = ('OID', 'Leaving Date', 'Joining Date', 'Purpose', 'Status', 'Student CMS', 'Guardian 1 Phone #', 'Guardian 2 Phone #', 'Guardian 3 Phone #')
         self.outpass_tree = ttk.Treeview(center_frame, columns=columns, show='headings', selectmode='browse')
 

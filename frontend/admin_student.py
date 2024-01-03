@@ -21,6 +21,9 @@ class AdminStudent(tk.Frame):
         center_frame = tk.Frame(self, bg='white')
         center_frame.pack(expand=True, fill='both')
 
+        Label(center_frame, text="Student's Information", font=('Microsoft YaHei UI Light', 20, 'bold'), bg='white', fg = 'black').pack(pady=30)
+
+
         # Create a treeview for displaying students
         columns = ('CMS', 'First Name', 'Last Name', 'Age', 'Email', 'Phone Number', 'City', 'Street', 'House Number', 'Room Number','Batch','Department ID', 'Department Name', 'Program','Hostel ID','Hostel Name','Guardian 1 Name','Guardian 1 Phone Number','Guardian 1 Email','Guardian 2 Name','Guardian 2 Phone Number','Guardian 2 Email','Guardian 3 Name','Guardian 3 Phone Number','Guardian 3 Email')
         self.student_tree = ttk.Treeview(center_frame, columns=columns, show='headings', selectmode='browse')
