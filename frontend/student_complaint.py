@@ -7,7 +7,7 @@ import config
 
 class StudentComplaint(tk.Frame):
     def __init__(self, master):
-        super().__init__(master)
+        super().__init__(master, bg='white')
         self.master = master
         self.complaint_data = []
         self.connection = mysql.connector.connect(**db_config_student)
@@ -22,7 +22,7 @@ class StudentComplaint(tk.Frame):
         right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=10, pady=10)
 
         # File New Complaint Section
-        new_complaint_label = Label(left_frame, text='File New Complaint', font=('Microsoft YaHei UI Light', 18), bg='white')
+        new_complaint_label = Label(left_frame, text='File New Complaint', font=('Microsoft YaHei UI Light', 18, 'bold'), bg='white', fg = 'black')
         new_complaint_label.pack(pady=(20))
 
         # Text field for new complaint
@@ -59,7 +59,7 @@ class StudentComplaint(tk.Frame):
         reset_button.pack(pady=10)
 
         # Complaint History Section
-        Label(right_frame, text='Complaint History', font=('Microsoft YaHei UI Light', 18), bg='white').pack(pady=20)
+        Label(right_frame, text='Complaint Log', font=('Microsoft YaHei UI Light', 18, 'bold'), fg = 'black', bg='white').pack(pady=20)
 
         # Complaint Treeview
 

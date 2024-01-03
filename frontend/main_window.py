@@ -12,6 +12,7 @@ from frontend.password_reset import PasswordResetScreen
 from frontend.admin_complaint import AdminComplaint
 from frontend.admin_outpass import AdminOutpass
 from frontend.admin_notification import AdminNotification
+from frontend.settings import Settings
 import config  
 
 #1f2b38 dark
@@ -30,6 +31,7 @@ class MainWindow(tk.Tk):
         # Create login page and student/admin pages
         self.login_page = LoginPage(self, self.show_admin_dashboard, self.show_student_dashboard, self.show_password_reset)
         self.password_reset = None
+        self.settings = None
 
         # student - none
         self.student_dashboard = None
@@ -96,6 +98,8 @@ class MainWindow(tk.Tk):
             self.admin_student.grid_forget()
         if self.admin_notification is not None:
             self.admin_notification.grid_forget()
+        if self.settings is not None:
+            self.settings.grid_forget()
 
         # Create or show the AdminDashboard
         if self.admin_dashboard is None:
@@ -122,8 +126,11 @@ class MainWindow(tk.Tk):
             # self.student_complaint.grid_forget()
         if self.password_reset is not None:
             self.password_reset.grid_forget()
+        if self.settings is not None:
+            self.settings.grid_forget()
         if self.student_dashboard is None:
             self.create_student_dashboard()
+
 
         self.login_page.grid_forget()
         self.student_dashboard.grid(row=0, column=0, sticky='nsew')
@@ -164,6 +171,8 @@ class MainWindow(tk.Tk):
         if self.admin_notification is not None:
             self.admin_notification.destroy()
             self.admin_notification = None
+        if self.settings is not None:
+            self.settings.grid_forget()
 
         self.student_side_panel.grid_forget()
         self.admin_side_panel.grid_forget()
@@ -197,6 +206,9 @@ class MainWindow(tk.Tk):
             self.admin_student.grid_forget()
         if self.admin_notification is not None:
             self.admin_notification.grid_forget()
+
+        self.settings = Settings(self)
+        self.settings.grid(row=0, column=0, sticky='nsew')
 
         # Show the appropriate side panel
         if config.current_user_type == 'student':

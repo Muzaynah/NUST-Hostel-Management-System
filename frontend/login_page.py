@@ -81,11 +81,8 @@ class LoginPage(tk.Frame):
 
         tk.Frame(login_frame, width=295, height=2, bg='white').pack(padx=20)  # Use white color for the separator
 
-        # Button(login_frame, width=26, pady=6, text='Sign In', bg='#014a81', fg='white',font=('Microsoft YaHei UI Light', 14), border=0, command=self.sign_in).pack(padx=30, pady=(130,30))
-        Button(login_frame, width=26, pady=6, text='Log In', bg='#014a81', fg='white',font=('Microsoft YaHei UI Light', 14), border=0, command=self.sign_in).pack(padx=30, pady=(10,5))
-
-        # Button(login_frame, width=26, pady=6, text='Forgot Password', bg='#014a81', fg='white',font=('Microsoft YaHei UI Light', 14), border=0, command=self.show_password_reset).pack(padx=30, pady=(10,30))
-        Button(login_frame, width=26, pady=6, text='Forgot Password', bg='#014a81', fg='white',font=('Microsoft YaHei UI Light', 14), border=0, command=self.forgot_password_clicked).pack(padx=30, pady=(10,10))
+        Button(login_frame, width=26, pady=6, text='Log In', bg='#014a81', fg='white',font=('Microsoft YaHei UI Light', 14), border=0, command=self.sign_in).pack(padx=30, pady=(100,5))
+        Button(login_frame, width=16, pady=2, text='Forgot Password?', bg = '#1a2530', fg='white',font=('Microsoft YaHei UI Light', 12), border=0, command=self.forgot_password_clicked).pack(padx=30, pady=(0,20))
         
 
     def sign_in(self):

@@ -10,7 +10,7 @@ def initialize_database():
     con1 = mysql.connector.connect(
         host='localhost',
         user='root',
-        password='ISR@m@nsoor0785')
+        password='')
     cur1 = con1.cursor()
     cur1.execute("SHOW DATABASES LIKE 'project'")
     result=cur1.fetchall()

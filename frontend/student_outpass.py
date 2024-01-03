@@ -8,14 +8,13 @@ import config
 
 class StudentOutpass(tk.Frame):
     def __init__(self, master):
-        super().__init__(master)
+        super().__init__(master, bg = 'white')
         self.master = master
         self.connection=mysql.connector.connect(**db_config_student)
         self.cursor=self.connection.cursor()
         self.outpass_tree = None
         
         self.create_widgets()
-
         
     def create_widgets(self):
 
@@ -28,55 +27,66 @@ class StudentOutpass(tk.Frame):
         right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=10, pady=10)
 
         # Request an outpass section (Left Frame)
-        Label(left_frame, text='Request an Outpass', font=('Helvetica', 16)).pack(pady=20)
+        Label(left_frame, text='Request an Outpass', bg = 'white', fg= 'black', font=('Microsoft YaHei UI Light', 16, 'bold')).pack(pady=30)
 
         # Entry widgets for outpass request form
-        purpose_label = Label(left_frame, text='Purpose:')
-        purpose_label.pack()
-        self.purpose_entry = Entry(left_frame)
-        self.purpose_entry.pack()
+        purpose_label = Label(left_frame, text='Purpose:', font=('Microsoft YaHei UI Light', 12), bg='white')
+        purpose_label.pack(pady=10)
+        self.purpose_entry = Entry(left_frame, font=('Microsoft YaHei UI Light', 10))
+        self.purpose_entry.pack(pady=(0,10))
 
         # Leaving Date
-        leaving_date_label = Label(left_frame, text='Leaving Date:')
-        leaving_date_label.pack()
+        leaving_date_label = Label(left_frame, text='Leaving Date:', font=('Microsoft YaHei UI Light', 12), bg='white')
+        leaving_date_label.pack(pady=10)
 
-        # Drop-down menus for day, month, and year
+        # Combo boxes for day, month, and year
         self.day_var = StringVar()
         self.month_var = StringVar()
         self.year_var = StringVar()
 
-        day_menu = OptionMenu(left_frame, self.day_var, *range(1, 32))
-        month_menu = OptionMenu(left_frame, self.month_var, *range(1, 13))
-        year_menu = OptionMenu(left_frame, self.year_var, *range(datetime.now().year, datetime.now().year + 1))
+        day_menu = ttk.Combobox(left_frame, textvariable=self.day_var, values=["Day"] + list(range(1, 32)), state="readonly", font=('Microsoft YaHei UI Light', 10))
+        month_menu = ttk.Combobox(left_frame, textvariable=self.month_var, values=["Month"] + list(range(1, 13)), state="readonly", font=('Microsoft YaHei UI Light', 10))
+        year_menu = ttk.Combobox(left_frame, textvariable=self.year_var, values=["Year"] + list(range(datetime.now().year, datetime.now().year + 1)), state="readonly", font=('Microsoft YaHei UI Light', 10))
+
+        # Default values
+        self.day_var.set("Day")
+        self.month_var.set("Month")
+        self.year_var.set("Year")
 
         day_menu.pack()
         month_menu.pack()
         year_menu.pack()
 
         # Joining Date
-        joining_date_label = Label(left_frame, text='Joining Date:')
-        joining_date_label.pack()
+        joining_date_label = Label(left_frame, text='Joining Date:', font=('Microsoft YaHei UI Light', 12), bg='white')
+        joining_date_label.pack(pady=(20,10))
 
-        # Drop-down menus for day, month, and year
+        # Combo boxes for day, month, and year
         self.day_var_joining = StringVar()
         self.month_var_joining = StringVar()
         self.year_var_joining = StringVar()
 
-        day_menu_joining = OptionMenu(left_frame, self.day_var_joining, *range(1, 32))
-        month_menu_joining = OptionMenu(left_frame, self.month_var_joining, *range(1, 13))
-        year_menu_joining = OptionMenu(left_frame, self.year_var_joining, *range(datetime.now().year, datetime.now().year + 1))
+        day_menu_joining = ttk.Combobox(left_frame, textvariable=self.day_var_joining, values=["Day"] + list(range(1, 32)), state="readonly", font=('Microsoft YaHei UI Light', 10))
+        month_menu_joining = ttk.Combobox(left_frame, textvariable=self.month_var_joining, values=["Month"] + list(range(1, 13)), state="readonly", font=('Microsoft YaHei UI Light', 10))
+        year_menu_joining = ttk.Combobox(left_frame, textvariable=self.year_var_joining, values=["Year"] + list(range(datetime.now().year, datetime.now().year + 1)), state="readonly", font=('Microsoft YaHei UI Light', 10))
+
+        # Default values
+        self.day_var_joining.set("Day")
+        self.month_var_joining.set("Month")
+        self.year_var_joining.set("Year")
 
         day_menu_joining.pack()
         month_menu_joining.pack()
         year_menu_joining.pack()
 
         # Submit button
-        submit_button = Button(left_frame, text='Submit', command=self.submit_outpass)
-        submit_button.pack(pady=10)
+        submit_button = Button(left_frame, text='Submit', command=self.submit_outpass, font=('Microsoft YaHei UI Light', 12), bg='#1a2530', fg='white', border=0)
+        submit_button.pack(pady=40)
 
         # Outpass Log section (Right Frame)
-        Label(right_frame, text='Outpass Requests and History', font=('Helvetica', 16)).pack(pady=20)
 
+         # Request an outpass section (Left Frame)
+        Label(right_frame, text='Outpass Log', bg = 'white', fg= 'black', font=('Microsoft YaHei UI Light', 16, 'bold')).pack(pady=30)
         columns = ("Outpass ID", "Purpose", "Leaving Date", "Joining Date", "Status")
         self.outpass_tree = ttk.Treeview(right_frame, columns=columns, show="headings", selectmode="browse", height=30)
 

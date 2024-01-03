@@ -7,7 +7,7 @@ import config
 
 class StudentAttendance(tk.Frame):
     def __init__(self, master):
-        super().__init__(master)
+        super().__init__(master, bg='white')
         self.master = master
         self.connection = mysql.connector.connect(**db_config_student)
         self.cursor = self.connection.cursor()
@@ -17,16 +17,50 @@ class StudentAttendance(tk.Frame):
             self.create_widgets()
 
     def create_widgets(self):
-
-        # Title label
-        title_label = Label(self, text='Attendance Record', font=('Helvetica', 16))
-        title_label.pack(pady=20)
-
-        left_frame = tk.Frame(self, width=600, height=600, bg='white')
+        # Left Frame
+        left_frame = tk.Frame(self, bg='white')
         left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=10, pady=10)
 
-        right_frame = tk.Frame(self, width=600, height=600, bg='white')
+        # Title label
+        title_label = Label(left_frame, text='Attendance Record', font=('Microsoft YaHei UI Light', 20, 'bold'), bg='white', fg = 'black')
+        title_label.pack(pady=30)
+
+        # Treeview
+        self.attendance_tree = ttk.Treeview(left_frame, columns=('Date', 'Status'), show='headings', height=15)
+        self.attendance_tree.heading('Date', text='Date')
+        self.attendance_tree.heading('Status', text='Status')
+        self.attendance_tree.pack(padx=20, pady=10)
+
+        # Treeview to display attendance records------------------------------------------------------------
+
+        #gets the current users attendance logs
+        # print('line 59 student_attendance')
+        query = f"call get_attendance_data({config.current_user_id[0]})"
+        self.cursor.execute(query, multi=True)
+        results = self.cursor.fetchall()
+        
+        if(results):
+            #insert each row of attendance record into the treeview
+            for result in results:
+                self.attendance_tree.insert('',tk.END,values=result)
+
+        # self.attendance_tree = ttk.Treeview(left_frame, columns=('Date', 'Status'), show='headings', height=15)
+        self.attendance_tree.heading('Date', text='Date')
+        self.attendance_tree.heading('Status', text='Status')
+        self.attendance_tree.pack(padx=20,pady=10)
+
+        # sample data
+        # attendance_data = [("2023-01-01", "Present"), ("2023-01-02", "Absent"), ("2023-01-03", "Present")]
+        # for item in attendance_data:
+        #     self.attendance_tree.insert('', tk.END, values=item)
+
+        #----------------------------------------------------------------------------------------------------
+
+
+        right_frame = tk.Frame(self, width=100, height=600, bg='white')
         right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=10, pady=10)
+        
+        Label(right_frame, text='Filter Records', font=('Microsoft YaHei UI Light', 14, 'bold'), bg='white', fg = 'black').pack(pady=50)
 
         # Filter options
         # date_label = Label(right_frame, text='Date:')
@@ -36,7 +70,7 @@ class StudentAttendance(tk.Frame):
 
         # Date label
         date_label = Label(right_frame, text='Date:', font=('Microsoft YaHei UI Light', 12), bg='white')
-        date_label.pack()
+        date_label.pack(pady=(0, 20))
 
         # Date dropdowns
         self.day_var = StringVar()
@@ -58,52 +92,22 @@ class StudentAttendance(tk.Frame):
 
         self.status_options = ["All", "Present", "Absent"]
         self.status_label = Label(right_frame, text='Status:', font=('Microsoft YaHei UI Light', 12), bg='white')
-        self.status_label.pack(pady=5)
+        self.status_label.pack(pady=(40, 20))
         self.status_var = StringVar()
         self.status_var.set(self.status_options[0])
 
         self.status_menu = ttk.Combobox(right_frame, textvariable=self.status_var, values=self.status_options, state="readonly")
         # self.status_menu.bind('<<ComboboxSelected>>', lambda _: self.filter_complaints(self.complaint_tree, self.filter_var.get()))
-        self.status_menu.pack(pady=10)
+        self.status_menu.pack()
 
         self.status_var.set(self.status_options[0])
 
         # Filter and Reset buttons
-        filter_button = Button(right_frame, text='Filter', command=self.apply_filters)
-        filter_button.pack(pady=10)
+        filter_button = Button(right_frame, text='Filter', command=self.apply_filters, width=15, font=('Microsoft YaHei UI Light', 12), bg='#1a2530', border=0, fg='white')
+        filter_button.pack(pady=(40,20))
 
-        reset_button = Button(right_frame, text='Reset', command=self.reset_filters)
-        reset_button.pack(pady=10)
-
-        # Treeview to display attendance records------------------------------------------------------------
-
-        #gets the current users attendance logs
-        # print('line 59 student_attendance')
-        query = f"call get_attendance_data({config.current_user_id[0]})"
-        self.cursor.execute(query, multi=True)
-        results = self.cursor.fetchall()
-        
-        if(results):
-            #insert each row of attendance record into the treeview
-            for result in results:
-                self.attendance_tree.insert('',tk.END,values=result)
-
-        # self.attendance_tree = ttk.Treeview(left_frame, columns=('Date', 'Status'), show='headings', height=15)
-        self.attendance_tree.heading('Date', text='Date')
-        self.attendance_tree.heading('Status', text='Status')
-        self.attendance_tree.pack(padx=10,pady=10)
-
-        # sample data
-        # attendance_data = [("2023-01-01", "Present"), ("2023-01-02", "Absent"), ("2023-01-03", "Present")]
-        # for item in attendance_data:
-        #     self.attendance_tree.insert('', tk.END, values=item)
-
-        #----------------------------------------------------------------------------------------------------
-
-        # Scrollbar for the treeview
-        scrollbar = ttk.Scrollbar(left_frame, orient=tk.VERTICAL, command=self.attendance_tree.yview)
-        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-        self.attendance_tree.config(yscrollcommand=scrollbar.set)
+        reset_button = Button(right_frame, text='Reset', command=self.reset_filters, width=15, font=('Microsoft YaHei UI Light', 12), bg='#1a2530', border = 0, fg='white')
+        reset_button.pack(pady=(0, 20))
 
     def apply_filters(self):
 
