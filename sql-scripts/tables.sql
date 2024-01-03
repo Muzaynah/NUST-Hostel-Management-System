@@ -8,7 +8,7 @@ sFirstName VARCHAR(50) NOT NULL,
 sLastName VARCHAR(50) NOT NULL,
 sAge INT NOT NULL,
 sEmail VARCHAR(50) CHECK (sEmail LIKE '%@%') NOT NULL,
-sPhoneNumber BIGINT NOT NULL,
+sPhoneNumber VARCHAR(11)  CHECK (LENGTH(sPhoneNumber) >= 10 and LENGTH(sPhoneNumber) <= 14) NOT NULL,
 city VARCHAR(50) NOT NULL,
 street VARCHAR(10) NOT NULL,
 house_no VARCHAR(10) NOT NULL,
@@ -33,7 +33,7 @@ numberOfStudents INT
 
 CREATE TABLE IF NOT EXISTS Guardian(
 gName VARCHAR(50),
-gPhoneNumber BIGINT CHECK (LENGTH(gPhoneNumber) = 11) NOT NULL,
+gPhoneNumber VARCHAR(11)  CHECK (LENGTH(gPhoneNumber) >= 10 and LENGTH(gPhoneNumber) <= 14),
 gEmail VARCHAR(50) CHECK (gEmail LIKE '%@%'),
 cms INT,
 CONSTRAINT guardianpk PRIMARY KEY(cms,gName)
@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS Manager(
 
 CREATE TABLE IF NOT EXISTS AttendanceEvent(
 	ADate DATE NOT NULL,
-    Attendance CHAR(20) NOT NULL,
+    Attendance CHAR(20),
     cms INT NOT NULL,
     CONSTRAINT attendanceeventpk PRIMARY KEY(ADate, cms),
     CONSTRAINT attendance_constraint CHECK(Attendance IN ("Present","Absent","Leave"))

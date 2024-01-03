@@ -3,7 +3,7 @@ from tkinter import Button, Label, StringVar, ttk, Entry
 from tkinter import messagebox  # Added to handle message boxes
 import mysql.connector
 import config
-from config import db_config
+from config import db_config,db_config_manager,db_config_student
 import config
 
 class Settings(tk.Frame):
@@ -11,8 +11,12 @@ class Settings(tk.Frame):
 
         super().__init__(master, bg='white')
         self.master = master
-        self.connection = mysql.connector.connect(**db_config)
-        self.cursor = self.connection.cursor()
+        if config.current_user_type == 'Student':
+            self.connection = mysql.connector.connect(**db_config_student)
+            self.cursor = self.connection.cursor()
+        else:
+            self.connection = mysql.connector.connect(**db_config_manager)
+            self.cursor = self.connection.cursor()
         self.user_type = ""
 
         self.new_password_var = StringVar()
@@ -54,12 +58,15 @@ class Settings(tk.Frame):
 
         # Query to change password
         if config.current_user_type == 'Student':
-            query = f"UPDATE Student SET sPassword = '{new_password}' WHERE cms = {config.current_user_id[0]}"
-        elif config.current_user_type == 'Manager':
-            query = f"UPDATE Manager SET mPassword = '{new_password}' WHERE MID = {config.current_user_id[0]}"
+            # query = f"UPDATE Student SET sPassword = '{new_password}' WHERE cms = {config.current_user_id[0]}"
+            self.cursor.callproc('change_password_student',[new_password,config.current_user_id[0]])
+        # elif config.current_user_type == 'Manager':
+        else:
+            # query = f"UPDATE Manager SET mPassword = '{new_password}' WHERE MID = {config.current_user_id[0]}"
+            self.cursor.callproc('change_password_manager',[new_password,config.current_user_id[0]])
 
         # Execute the query and commit the changes
-        self.cursor.execute(query)
+        # self.cursor.execute(query)
         self.connection.commit()
 
         print(f"New Password: {new_password}")

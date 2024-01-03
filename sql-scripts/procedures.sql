@@ -74,3 +74,19 @@ BEGIN
     WHERE cms = current_student_id;
 END;
 --
+CREATE PROCEDURE change_password_student(
+    IN new_password VARCHAR(50),
+    IN user_id INT
+)
+BEGIN
+    UPDATE Student SET sPassword = new_password WHERE cms = user_id;
+END;
+--
+CREATE PROCEDURE change_password_manager(
+    IN new_password VARCHAR(50),
+    IN user_id INT
+)
+BEGIN
+    UPDATE Manager SET mPassword = new_password WHERE MID = user_id;
+END;
+--

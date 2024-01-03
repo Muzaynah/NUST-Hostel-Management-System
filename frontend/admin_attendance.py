@@ -19,10 +19,10 @@ class AdminAttendance(tk.Frame):
         result = self.cursor.fetchall()
         self.current_date = result[0][0]
         self.todays_date = result[0][0]
-        print(datetime.now())
-        print(result)
-        print(result[0])
-        print(result[0][0])
+        # print(datetime.now())
+        # print(result)
+        # print(result[0])
+        # print(result[0][0])
         date_object = datetime.strptime(str(result[0][0]), '%Y-%m-%d')
         self.current_year = date_object.year
         self.current_month=date_object.month
@@ -36,7 +36,7 @@ class AdminAttendance(tk.Frame):
         self.hostel_id=self.cursor.fetchone()
 
         self.dates=[result[0]]
-        print(self.dates)
+        # print(self.dates)
         self.attendance_data = {}
         self.create_widgets()
 
@@ -107,14 +107,14 @@ class AdminAttendance(tk.Frame):
         query = f"SELECT aDate FROM attendanceevent;"
         cursor.execute(query)
         results=cursor.fetchall()
-        print(self.current_date,results)
+        # print(self.current_date,results)
         # for result in results:
         #     date_tuple = result[0]  # Extract the date tuple from the result tuple
         #     result = datetime.strptime(str(date_tuple), '%Y-%m-%d')
         #     # result = date_tuple.strftime('%Y-%m-%d')
         results = [result[0].strftime('%Y-%m-%d') for result in results]
         date_object = datetime.strptime(str(self.current_date), '%Y-%m-%d').date()
-        print(results,date_object)
+        # print(results,date_object)
         if str(date_object) in results:
             print('line 111')
             #execute queries to fetch data
@@ -124,7 +124,7 @@ class AdminAttendance(tk.Frame):
             '''
             cursor.execute(query)
             results= cursor.fetchall()
-            print(results)
+            # print(results)
             if(results):
                 for result in results:
                     self.attendance_tree.insert('',tk.END,values=result)
@@ -140,7 +140,7 @@ class AdminAttendance(tk.Frame):
             query = f"call get_all_student_data_through_hostel2({self.hostel_id[0]})"
             cursor.execute(query)
             results=cursor.fetchall()
-            print(results)
+            # print(results)
             for result in results:
                 cms,firstName,lastName,age,email,phoneNumber,city,street,house_no,roomNumber,batch,dept_id,dept_name,program,hostel_id,hostel_name = result
                 values = [cms,firstName + ' '+ lastName,phoneNumber,roomNumber]
@@ -199,8 +199,8 @@ class AttendanceEditorWindow(tk.Toplevel):
         self.attendance_data = attendance_data
         self.student_vars = []  # Store student and status variables
         self.current_date = current_date
-        print(self.current_date)
-        print(self.date)
+        # print(self.current_date)
+        # print(self.date)
         self.attendance_tree = attendance_tree
         self.show_current_date=show_current_date
 
@@ -269,7 +269,7 @@ class AttendanceEditorWindow(tk.Toplevel):
         for cms_var, status_var in self.student_vars:
             cms = cms_var.get()  # Get the value from StringVar
             status = status_var.get()  # Get the value from StringVar
-            print(cms,status)
+            # print(cms,status)
             query = f"UPDATE AttendanceEvent SET Attendance = '{status}' WHERE cms = {cms} AND ADate = '{self.current_date.strftime('%Y-%m-%d')}'"
             cursor.execute(query)
             connection.commit()

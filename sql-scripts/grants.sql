@@ -14,9 +14,13 @@ grant execute on procedure get_outpass_data_through_cms to 'student'@'localhost'
 
 grant execute on procedure get_complaint_data_through_cms to 'student'@'localhost';
 
+-- grant update on student to 'student'@'localhost';
+
+grant execute on procedure change_password_student to 'student'@'localhost';
 
 
 
+grant execute on procedure change_password_manager to 'manager'@'localhost';
 
 grant select on attendanceevent to 'manager'@'localhost';
 
@@ -47,5 +51,4 @@ grant select on hostel to 'manager'@'localhost';
 GRANT SELECT ON guardian TO 'manager'@'localhost';
 
 grant select on StudentGuardiansAttendanceView to 'manager'@'localhost';
-
 ;

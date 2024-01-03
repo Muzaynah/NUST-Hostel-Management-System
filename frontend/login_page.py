@@ -95,6 +95,7 @@ class LoginPage(tk.Frame):
             id = user_id
             config.current_user_id = id
             print('manager logging in')
+            config.current_user_type="Manager"
             self.show_admin_dashboard()
 
             self.password.delete(0, 'end')
@@ -108,6 +109,7 @@ class LoginPage(tk.Frame):
         elif user_type == 'student':
             id = user_id
             config.current_user_id = id
+            config.current_user_type="Student"
             print('student logging in')
             self.show_student_dashboard()
 
